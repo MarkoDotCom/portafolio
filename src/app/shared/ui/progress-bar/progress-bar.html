@@ -1,0 +1,16 @@
+<div class="ui-progress-bar">
+  <div class="ui-progress-bar__header">
+    <span>{{ label() }}</span>
+    <span class="ui-progress-bar__value">{{ value() }}%</span>
+  </div>
+  <div
+    class="ui-progress-bar__track"
+    role="progressbar"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    [attr.aria-valuenow]="value()"
+    [attr.aria-label]="label()"
+  >
+    <div class="ui-progress-bar__fill" [style.width.%]="value()"></div>
+  </div>
+</div>

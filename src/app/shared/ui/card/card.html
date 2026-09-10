@@ -1,0 +1,8 @@
+<div class="ui-card">
+  @if (title()) {
+    <h3 class="ui-card__title">{{ title() }}</h3>
+  }
+  <div class="ui-card__body">
+    <ng-content />
+  </div>
+</div>

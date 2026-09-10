@@ -1,0 +1,9 @@
+<a
+  class="ui-link"
+  [href]="href()"
+  [attr.target]="external() ? '_blank' : null"
+  [attr.rel]="external() ? 'noopener noreferrer' : null"
+  [attr.aria-label]="ariaLabel()"
+>
+  <ng-content />
+</a>
