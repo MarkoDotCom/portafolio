@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { Auth, CurrentUser } from '../auth/auth.decorators.js';
 import type { CurrentUserData } from '../auth/current-user.js';
-import type { ApplicantDto, ApplicationDto } from './application.dto.js';
+import type { ApplicantDto, ApplicationDto } from '../database/tables/job-application.table.js';
 import { ApplicationsService } from './applications.service.js';
 import { CreateApplicationDto } from './dto/create-application.dto.js';
 import { UpdateApplicationStatusDto } from './dto/update-application-status.dto.js';

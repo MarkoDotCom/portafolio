@@ -1,28 +1,16 @@
 import { Test } from '@nestjs/testing';
-import { PrismaService } from '../database/prisma.service.js';
+import { AppUserTable } from '../database/tables/app-user.table.js';
 import { UsersService } from './users.service.js';
 
 describe('UsersService', () => {
-  it('maps worker_profile and company_member to roles', async () => {
-    const findMany = vi.fn().mockResolvedValue([
-      {
-        id: 'u1',
-        full_name: 'Ana',
-        email: 'ana@example.com',
-        worker_profile: { headline: 'Frontend' },
-        company_member: [],
-      },
-      {
-        id: 'u3',
-        full_name: 'Carla',
-        email: 'carla@example.com',
-        worker_profile: null,
-        company_member: [{ role: 'owner', company: { id: 'c1', name: 'Nortech Labs' } }],
-      },
+  it('derives roles from worker profile and company memberships', async () => {
+    const listWithRoles = vi.fn().mockResolvedValue([
+      { id: 'u1', fullName: 'Ana', email: 'ana@example.com', headline: 'Frontend', isWorker: true, companies: [] },
+      { id: 'u3', fullName: 'Carla', email: 'carla@example.com', headline: null, isWorker: false, companies: [{ id: 'c1', name: 'Nortech Labs', role: 'owner' }] },
     ]);
 
     const moduleRef = await Test.createTestingModule({
-      providers: [UsersService, { provide: PrismaService, useValue: { app_user: { findMany } } }],
+      providers: [UsersService, { provide: AppUserTable, useValue: { listWithRoles } }],
     }).compile();
 
     const result = await moduleRef.get(UsersService).findAll();

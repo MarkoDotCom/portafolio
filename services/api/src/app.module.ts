@@ -5,7 +5,7 @@ import { ApplicationsModule } from './applications/applications.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { HealthController } from './health/health.controller.js';
 import { JobsModule } from './jobs/jobs.module.js';
-import { PrismaModule } from './database/prisma.module.js';
+import { DatabaseModule } from './database/database.module.js';
 import { SkillsModule } from './skills/skills.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -16,7 +16,7 @@ import { UsersModule } from './users/users.module.js';
       // Un solo .env para todo el repo: proyectos/portafolio/.env. Las variables ya presentes en el entorno (compose) tienen prioridad.
       envFilePath: fileURLToPath(new URL('../../../.env', import.meta.url)),
     }),
-    PrismaModule,
+    DatabaseModule,
     AuthModule,
     UsersModule,
     SkillsModule,

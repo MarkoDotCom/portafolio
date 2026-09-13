@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service.js';
+import { AppUserTable } from '../database/tables/app-user.table.js';
 
 export type UserRole = 'worker' | 'employer';
 
@@ -14,29 +14,15 @@ export interface UserSummary {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly users: AppUserTable) {}
 
   async findAll(): Promise<UserSummary[]> {
-    const users = await this.prisma.app_user.findMany({
-      include: {
-        worker_profile: { select: { headline: true } },
-        company_member: { select: { role: true, company: { select: { id: true, name: true } } } },
-      },
-      orderBy: { full_name: 'asc' },
-    });
-
+    const users = await this.users.listWithRoles();
     return users.map((u) => {
       const roles: UserRole[] = [];
-      if (u.worker_profile) roles.push('worker');
-      if (u.company_member.length > 0) roles.push('employer');
-      return {
-        id: u.id,
-        fullName: u.full_name,
-        email: u.email,
-        headline: u.worker_profile?.headline ?? null,
-        roles,
-        companies: u.company_member.map((m) => ({ id: m.company.id, name: m.company.name, role: m.role })),
-      };
+      if (u.isWorker) roles.push('worker');
+      if (u.companies.length > 0) roles.push('employer');
+      return { id: u.id, fullName: u.fullName, email: u.email, headline: u.headline, roles, companies: u.companies };
     });
   }
 }

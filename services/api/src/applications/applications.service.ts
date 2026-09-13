@@ -1,27 +1,18 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { assertMember, type CurrentUserData } from '../auth/current-user.js';
-import { PrismaService } from '../database/prisma.service.js';
-import { toApplicantDto, toApplicationDto, type ApplicantDto, type ApplicationDto } from './application.dto.js';
+import {
+  DuplicateApplicationError,
+  JobApplicationTable,
+  type ApplicantDto,
+  type ApplicationDto,
+  type ApplicationStatus,
+} from '../database/tables/job-application.table.js';
+import { JobPostingTable } from '../database/tables/job-posting.table.js';
 import type { CreateApplicationDto } from './dto/create-application.dto.js';
 import type { UpdateApplicationStatusDto } from './dto/update-application-status.dto.js';
 
-const APPLICATION_INCLUDE = {
-  job_posting: { select: { id: true, title: true, company: { select: { id: true, name: true } } } },
-} as const;
-
-const APPLICANT_INCLUDE = {
-  worker_profile: {
-    select: {
-      user_id: true,
-      headline: true,
-      app_user: { select: { full_name: true } },
-      worker_skill: { select: { skill: { select: { name: true } } }, orderBy: { sort_order: 'asc' } },
-    },
-  },
-} as const;
-
 // Transiciones que puede hacer el empleador. offer, rejected y withdrawn son terminales.
-const EMPLOYER_TRANSITIONS: Record<string, readonly string[]> = {
+const EMPLOYER_TRANSITIONS: Record<ApplicationStatus, readonly ApplicationStatus[]> = {
   applied: ['reviewing', 'rejected'],
   reviewing: ['interview', 'rejected'],
   interview: ['offer', 'rejected'],
@@ -30,94 +21,56 @@ const EMPLOYER_TRANSITIONS: Record<string, readonly string[]> = {
   withdrawn: [],
 };
 
-const TERMINAL = new Set(['offer', 'rejected', 'withdrawn']);
-
-const UNIQUE_VIOLATION = 'P2002';
+const TERMINAL = new Set<ApplicationStatus>(['offer', 'rejected', 'withdrawn']);
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly applications: JobApplicationTable,
+    private readonly jobs: JobPostingTable,
+  ) {}
 
   async apply(jobId: string, dto: CreateApplicationDto, user: CurrentUserData): Promise<ApplicationDto> {
-    const job = await this.prisma.job_posting.findUnique({ where: { id: jobId }, select: { status: true } });
+    const job = await this.jobs.findById(jobId);
     if (!job) throw new NotFoundException('Oferta no encontrada');
     if (job.status !== 'published') throw new ConflictException('La oferta no está publicada');
 
     try {
-      return await this.prisma.$transaction(async (tx) => {
-        const row = await tx.job_application.create({
-          data: { job_posting_id: jobId, worker_id: user.id, cover_letter: dto.coverLetter ?? null },
-          include: APPLICATION_INCLUDE,
-        });
-        await tx.job_application_event.create({
-          data: { application_id: row.id, changed_by: user.id, from_status: null, to_status: 'applied' },
-        });
-        return toApplicationDto(row);
-      });
+      return await this.applications.create(jobId, user.id, dto.coverLetter ?? null);
     } catch (e) {
-      if ((e as { code?: string }).code === UNIQUE_VIOLATION) throw new ConflictException('Ya postulaste a esta oferta');
+      if (e instanceof DuplicateApplicationError) throw new ConflictException('Ya postulaste a esta oferta');
       throw e;
     }
   }
 
-  async listMine(user: CurrentUserData): Promise<ApplicationDto[]> {
-    const rows = await this.prisma.job_application.findMany({
-      where: { worker_id: user.id },
-      include: APPLICATION_INCLUDE,
-      orderBy: { applied_at: 'desc' },
-    });
-    return rows.map(toApplicationDto);
+  listMine(user: CurrentUserData): Promise<ApplicationDto[]> {
+    return this.applications.findByWorker(user.id);
   }
 
   async withdraw(id: string, user: CurrentUserData): Promise<ApplicationDto> {
-    const app = await this.prisma.job_application.findUnique({ where: { id }, select: { worker_id: true, status: true } });
-    if (!app || app.worker_id !== user.id) throw new NotFoundException('Postulación no encontrada');
+    const app = await this.applications.findRef(id);
+    if (!app || app.workerId !== user.id) throw new NotFoundException('Postulación no encontrada');
     if (TERMINAL.has(app.status)) throw new ConflictException(`No se puede retirar una postulación en estado ${app.status}`);
 
-    return this.transition(id, app.status, 'withdrawn', user.id, null);
+    return this.applications.transition(id, app.status, 'withdrawn', user.id, null);
   }
 
   async listForJob(jobId: string, user: CurrentUserData): Promise<ApplicantDto[]> {
-    const job = await this.prisma.job_posting.findUnique({ where: { id: jobId }, select: { company_id: true } });
+    const job = await this.jobs.findById(jobId);
     if (!job) throw new NotFoundException('Oferta no encontrada');
-    assertMember(user, job.company_id);
-
-    const rows = await this.prisma.job_application.findMany({
-      where: { job_posting_id: jobId },
-      include: APPLICANT_INCLUDE,
-      orderBy: { applied_at: 'asc' },
-    });
-    return rows.map(toApplicantDto);
+    assertMember(user, job.company.id);
+    return this.applications.findApplicantsByJob(jobId);
   }
 
   async updateStatus(id: string, dto: UpdateApplicationStatusDto, user: CurrentUserData): Promise<ApplicantDto> {
-    const app = await this.prisma.job_application.findUnique({
-      where: { id },
-      select: { status: true, job_posting: { select: { company_id: true } } },
-    });
+    const app = await this.applications.findRef(id);
     if (!app) throw new NotFoundException('Postulación no encontrada');
-    assertMember(user, app.job_posting.company_id);
-    if (!EMPLOYER_TRANSITIONS[app.status]?.includes(dto.status)) {
+    assertMember(user, app.companyId);
+    if (!EMPLOYER_TRANSITIONS[app.status].includes(dto.status)) {
       throw new ConflictException(`No se puede pasar de ${app.status} a ${dto.status}`);
     }
 
-    await this.transition(id, app.status, dto.status, user.id, dto.note ?? null);
-    const row = await this.prisma.job_application.findUniqueOrThrow({ where: { id }, include: APPLICANT_INCLUDE });
-    return toApplicantDto(row);
-  }
-
-  // Cambia el estado y deja el evento en el historial, en una sola transacción
-  private transition(id: string, from: string, to: string, changedBy: string, note: string | null): Promise<ApplicationDto> {
-    return this.prisma.$transaction(async (tx) => {
-      const row = await tx.job_application.update({
-        where: { id },
-        data: { status: to as never },
-        include: APPLICATION_INCLUDE,
-      });
-      await tx.job_application_event.create({
-        data: { application_id: id, changed_by: changedBy, from_status: from as never, to_status: to as never, note },
-      });
-      return toApplicationDto(row);
-    });
+    await this.applications.transition(id, app.status, dto.status, user.id, dto.note ?? null);
+    return this.applications.findApplicant(id);
   }
 }
