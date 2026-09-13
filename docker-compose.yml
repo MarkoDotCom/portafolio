@@ -1,6 +1,6 @@
 # Entorno de desarrollo del portafolio.
 #   docker compose up -d db        # solo la base de datos
-#   docker compose up              # base + cliente Angular (http://localhost:4200)
+#   docker compose up              # base + API NestJS (http://localhost:3000) + cliente Angular (http://localhost:4200)
 #   docker compose down -v         # borra el volumen: schema.sql y seed.sql se reejecutan al subir
 # Variables en .env (ver .env.example).
 
@@ -36,6 +36,24 @@ services:
       - ./client:/app
       - client-node-modules:/app/node_modules
 
+  api:
+    image: node:24-bookworm-slim
+    working_dir: /app
+    # Instala dependencias solo la primera vez; regenera el cliente Prisma por si cambió schema.prisma
+    command: sh -c "[ -x node_modules/.bin/nest ] || npm ci; npx prisma generate && exec npm run start:dev"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      API_PORT: 3000
+    ports:
+      - "${API_PORT:-3000}:3000"
+    volumes:
+      - ./services/api:/app
+      - api-node-modules:/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   db-data:
   client-node-modules:
+  api-node-modules:
