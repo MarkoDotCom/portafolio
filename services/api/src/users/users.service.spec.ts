@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../database/prisma.service.js';
 import { UsersService } from './users.service.js';
 
 describe('UsersService', () => {
@@ -17,7 +17,7 @@ describe('UsersService', () => {
         full_name: 'Carla',
         email: 'carla@example.com',
         worker_profile: null,
-        company_member: [{ company: { name: 'Nortech Labs' } }],
+        company_member: [{ role: 'owner', company: { id: 'c1', name: 'Nortech Labs' } }],
       },
     ]);
 
@@ -29,7 +29,7 @@ describe('UsersService', () => {
 
     expect(result).toEqual([
       { id: 'u1', fullName: 'Ana', email: 'ana@example.com', headline: 'Frontend', roles: ['worker'], companies: [] },
-      { id: 'u3', fullName: 'Carla', email: 'carla@example.com', headline: null, roles: ['employer'], companies: ['Nortech Labs'] },
+      { id: 'u3', fullName: 'Carla', email: 'carla@example.com', headline: null, roles: ['employer'], companies: [{ id: 'c1', name: 'Nortech Labs', role: 'owner' }] },
     ]);
   });
 });

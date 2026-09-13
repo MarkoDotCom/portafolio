@@ -3,6 +3,9 @@
 #   docker compose up              # base + API NestJS (http://localhost:3000) + cliente Angular (http://localhost:4200)
 #   docker compose down -v         # borra el volumen: schema.sql y seed.sql se reejecutan al subir
 # Variables en .env (ver .env.example).
+#
+# api y client corren con tu uid y usan el node_modules del host (mismo Linux x64/glibc), así lo que
+# generan (dist, generated, .angular) queda con tu usuario. Requiere `npm install` previo en cada carpeta.
 
 services:
   db:
@@ -24,36 +27,35 @@ services:
       timeout: 3s
       retries: 10
 
-  client:
-    # glibc (no alpine): los binarios nativos de esbuild/vite no son compatibles con musl
-    image: node:24-bookworm-slim
-    working_dir: /app
-    # Instala dependencias solo la primera vez (quedan en el volumen client-node-modules)
-    command: sh -c "[ -x node_modules/.bin/ng ] || npm ci; exec npx ng serve --host 0.0.0.0"
-    ports:
-      - "${CLIENT_PORT:-4200}:4200"
-    volumes:
-      - ./client:/app
-      - client-node-modules:/app/node_modules
-
   api:
     image: node:24-bookworm-slim
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     working_dir: /app
-    # Instala dependencias solo la primera vez; regenera el cliente Prisma por si cambió schema.prisma
-    command: sh -c "[ -x node_modules/.bin/nest ] || npm ci; npx prisma generate && exec npm run start:dev"
+    # Regenera el cliente Prisma por si cambió schema.prisma
+    command: sh -c "npx prisma generate && exec npm run start:dev"
     environment:
+      HOME: /tmp
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       API_PORT: 3000
     ports:
       - "${API_PORT:-3000}:3000"
     volumes:
       - ./services/api:/app
-      - api-node-modules:/app/node_modules
     depends_on:
       db:
         condition: service_healthy
 
+  client:
+    image: node:24-bookworm-slim
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    working_dir: /app
+    environment:
+      HOME: /tmp
+    command: npx ng serve --host 0.0.0.0
+    ports:
+      - "${CLIENT_PORT:-4200}:4200"
+    volumes:
+      - ./client:/app
+
 volumes:
   db-data:
-  client-node-modules:
-  api-node-modules:

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../database/prisma.service.js';
 
 export type UserRole = 'worker' | 'employer';
 
@@ -9,7 +9,7 @@ export interface UserSummary {
   email: string;
   headline: string | null;
   roles: UserRole[];
-  companies: string[];
+  companies: { id: string; name: string; role: 'owner' | 'recruiter' }[];
 }
 
 @Injectable()
@@ -20,7 +20,7 @@ export class UsersService {
     const users = await this.prisma.app_user.findMany({
       include: {
         worker_profile: { select: { headline: true } },
-        company_member: { select: { company: { select: { name: true } } } },
+        company_member: { select: { role: true, company: { select: { id: true, name: true } } } },
       },
       orderBy: { full_name: 'asc' },
     });
@@ -35,7 +35,7 @@ export class UsersService {
         email: u.email,
         headline: u.worker_profile?.headline ?? null,
         roles,
-        companies: u.company_member.map((m) => m.company.name),
+        companies: u.company_member.map((m) => ({ id: m.company.id, name: m.company.name, role: m.role })),
       };
     });
   }
