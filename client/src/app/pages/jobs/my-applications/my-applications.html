@@ -1,0 +1,30 @@
+<main class="page">
+  <ui-section-header heading="Mis postulaciones" />
+
+  @if (failed()) {
+    <p class="ui-form__error">No se pudieron cargar tus postulaciones.</p>
+  } @else if (applications(); as applications) {
+    @if (applications.length === 0) {
+      <p class="ui-muted">Aún no has postulado a ninguna oferta. <a routerLink="/ofertas">Ver ofertas</a></p>
+    }
+    <div class="page__grid">
+      @for (application of applications; track application.id) {
+        <ui-card [heading]="application.job.title">
+          <p class="my-applications__company">{{ application.job.company.name }}</p>
+          <p>
+            <ui-tag>{{ statusLabels[application.status] }}</ui-tag>
+            <span class="ui-muted my-applications__date">{{ application.appliedAt | date: 'mediumDate' }}</span>
+          </p>
+          <div class="ui-form__actions">
+            <a class="my-applications__link" [routerLink]="['/ofertas', application.job.id]">Ver oferta</a>
+            @if (canWithdraw(application)) {
+              <ui-button variant="secondary" (clicked)="withdraw(application)">Retirar</ui-button>
+            }
+          </div>
+        </ui-card>
+      }
+    </div>
+  } @else {
+    <p class="ui-muted">Cargando…</p>
+  }
+</main>

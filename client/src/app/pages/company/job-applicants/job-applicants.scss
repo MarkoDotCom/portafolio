@@ -1,0 +1,17 @@
+.job-applicants__headline {
+  margin: 0 0 0.75rem;
+  color: var(--ui-color-text-muted);
+}
+
+.job-applicants__letter {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--ui-color-border-strong);
+  white-space: pre-wrap;
+  color: var(--ui-color-text-body);
+}
+
+.job-applicants__date {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}

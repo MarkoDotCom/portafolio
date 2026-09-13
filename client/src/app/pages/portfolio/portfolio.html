@@ -3,7 +3,7 @@
   <ui-sidebar [items]="sections" [(open)]="menuOpen" />
 
   <div class="app-content">
-    <header class="app-header">
+    <div class="app-toolbar">
       <button
         type="button"
         class="app-menu-button"
@@ -15,14 +15,12 @@
           <path d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-      <span class="app-header__brand">{{ user.fullName }}</span>
-      <a class="app-header__switch" routerLink="/">Cambiar usuario</a>
-      <ui-theme-toggle />
-    </header>
+      <span class="app-toolbar__title">Secciones</span>
+    </div>
 
     <main class="app-main">
       <section id="inicio" class="app-section">
-        <ui-profile-card imageSrc="avatar-placeholder.svg" [name]="user.fullName" [subtitle]="user.headline ?? user.companies.join(', ')">
+        <ui-profile-card imageSrc="avatar-placeholder.svg" [name]="user.fullName" [subtitle]="subtitle(user)">
           {{ user.email }}
         </ui-profile-card>
       </section>

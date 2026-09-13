@@ -16,7 +16,7 @@
         <ui-profile-card
           imageSrc="avatar-placeholder.svg"
           [name]="user.fullName"
-          [subtitle]="user.headline ?? user.companies.join(', ')"
+          [subtitle]="subtitle(user)"
         >
           <div class="user-select__roles">
             @for (role of user.roles; track role) {

@@ -1,0 +1,21 @@
+.job-detail__salary {
+  margin: 1rem 0 0;
+  font-weight: 500;
+}
+
+.job-detail__description {
+  margin: 1.5rem 0;
+  white-space: pre-wrap;
+  color: var(--ui-color-text-body);
+}
+
+.job-detail__subheading {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.job-detail__skills {
+  margin: 0 0 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--ui-color-text-body);
+}

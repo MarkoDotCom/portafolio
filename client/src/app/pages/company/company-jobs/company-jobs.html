@@ -1,0 +1,51 @@
+<main class="page">
+  <ui-section-header heading="Ofertas de mi empresa" />
+
+  <div class="company-jobs__toolbar">
+    @if (companies.length > 1) {
+      <label class="ui-field company-jobs__company">
+        <span class="ui-field__label">Empresa</span>
+        <select class="ui-select" [value]="companyId()" (change)="selectCompany($any($event.target).value)">
+          @for (company of companies; track company.id) {
+            <option [value]="company.id">{{ company.name }}</option>
+          }
+        </select>
+      </label>
+    }
+    <a class="company-jobs__new" routerLink="/empresa/ofertas/nueva" [queryParams]="{ company: companyId() }">+ Nueva oferta</a>
+  </div>
+
+  @if (failed()) {
+    <p class="ui-form__error">No se pudieron cargar las ofertas.</p>
+  } @else if (jobs(); as jobs) {
+    @if (jobs.length === 0) {
+      <p class="ui-muted">Todavía no hay ofertas. Crea la primera.</p>
+    }
+    <div class="page__grid">
+      @for (job of jobs; track job.id) {
+        <ui-card [heading]="job.title">
+          <div class="ui-tags">
+            <ui-tag>{{ statusLabels[job.status] }}</ui-tag>
+            <ui-tag>{{ typeLabels[job.employmentType] }}</ui-tag>
+            <ui-tag>{{ modeLabels[job.workMode] }}</ui-tag>
+          </div>
+          <p class="company-jobs__count">
+            <a [routerLink]="['/empresa/ofertas', job.id, 'postulantes']">
+              {{ job.applicationsCount }} {{ job.applicationsCount === 1 ? 'postulante' : 'postulantes' }}
+            </a>
+          </p>
+          <div class="ui-form__actions">
+            @if (job.status === 'draft') {
+              <ui-button (clicked)="setStatus(job, 'published')">Publicar</ui-button>
+            }
+            @if (job.status === 'published') {
+              <ui-button variant="secondary" (clicked)="setStatus(job, 'closed')">Cerrar</ui-button>
+            }
+          </div>
+        </ui-card>
+      }
+    </div>
+  } @else {
+    <p class="ui-muted">Cargando…</p>
+  }
+</main>

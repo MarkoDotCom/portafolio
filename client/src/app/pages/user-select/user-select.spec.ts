@@ -8,7 +8,7 @@ import { UserSelect } from './user-select';
 
 const USERS: UserSummary[] = [
   { id: 'u1', fullName: 'Ana Rojas', email: 'ana@example.com', headline: 'Frontend', roles: ['worker'], companies: [] },
-  { id: 'u3', fullName: 'Carla Muñoz', email: 'carla@example.com', headline: null, roles: ['employer'], companies: ['Nortech Labs'] },
+  { id: 'u3', fullName: 'Carla Muñoz', email: 'carla@example.com', headline: null, roles: ['employer'], companies: [{ id: 'c1', name: 'Nortech Labs', role: 'owner' }] },
 ];
 
 describe('UserSelect', () => {
@@ -48,14 +48,14 @@ describe('UserSelect', () => {
     expect(el.querySelectorAll('ui-tag')[1]?.textContent).toContain('Empleador');
   });
 
-  it('should select the user and navigate to /portafolio on enter', async () => {
+  it('should select the user and navigate to their home on enter', async () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     const fixture = await renderWithUsers();
 
     (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('ui-button button')!.click();
 
     expect(TestBed.inject(Session).currentUser()).toEqual(USERS[0]);
-    expect(navigate).toHaveBeenCalledWith('/portafolio');
+    expect(navigate).toHaveBeenCalledWith('/ofertas');
   });
 
   it('should show an error when the API fails', async () => {

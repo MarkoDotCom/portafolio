@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { homeFor, userSubtitle } from '../../core/labels';
 import { Session } from '../../core/session';
 import { UsersApi, type UserRole, type UserSummary } from '../../core/users.api';
 import { Button, ProfileCard, SectionHeader, Tag, ThemeToggle } from '../../shared/ui';
@@ -21,6 +22,7 @@ export class UserSelect {
   private readonly router = inject(Router);
 
   protected readonly apiUrl = environment.apiUrl;
+  protected readonly subtitle = userSubtitle;
   protected readonly roleLabels = ROLE_LABELS;
   protected readonly users = signal<UserSummary[] | null>(null);
   protected readonly failed = signal(false);
@@ -36,6 +38,6 @@ export class UserSelect {
 
   protected enter(user: UserSummary): void {
     this.session.select(user);
-    void this.router.navigateByUrl('/portafolio');
+    void this.router.navigateByUrl(homeFor(user));
   }
 }

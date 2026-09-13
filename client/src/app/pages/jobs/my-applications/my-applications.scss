@@ -1,0 +1,20 @@
+.my-applications__company {
+  margin: 0 0 0.75rem;
+  font-weight: 500;
+}
+
+.my-applications__date {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.my-applications__link {
+  align-self: center;
+  color: var(--ui-color-primary);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

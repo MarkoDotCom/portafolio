@@ -1,0 +1,98 @@
+<main class="page page--narrow">
+  <a class="page__back" routerLink="/empresa/ofertas">← Ofertas de mi empresa</a>
+  <ui-section-header heading="Nueva oferta" subtitle="Se crea como borrador; publícala desde la lista." />
+
+  <form class="job-form" [formGroup]="form" (ngSubmit)="submit()">
+    @if (companies.length > 1) {
+      <label class="ui-field">
+        <span class="ui-field__label">Empresa</span>
+        <select class="ui-select" formControlName="companyId">
+          @for (company of companies; track company.id) {
+            <option [value]="company.id">{{ company.name }}</option>
+          }
+        </select>
+      </label>
+    }
+
+    <label class="ui-field">
+      <span class="ui-field__label">Título</span>
+      <input class="ui-input" type="text" formControlName="title" />
+      @if (form.controls.title.touched && form.controls.title.invalid) {
+        <span class="ui-form__error">Mínimo 3 caracteres.</span>
+      }
+    </label>
+
+    <label class="ui-field">
+      <span class="ui-field__label">Descripción</span>
+      <textarea class="ui-textarea" formControlName="description" rows="6"></textarea>
+      @if (form.controls.description.touched && form.controls.description.invalid) {
+        <span class="ui-form__error">Mínimo 10 caracteres.</span>
+      }
+    </label>
+
+    <div class="job-form__row">
+      <label class="ui-field">
+        <span class="ui-field__label">Tipo</span>
+        <select class="ui-select" formControlName="employmentType">
+          @for (option of typeOptions; track option[0]) {
+            <option [value]="option[0]">{{ option[1] }}</option>
+          }
+        </select>
+      </label>
+      <label class="ui-field">
+        <span class="ui-field__label">Modalidad</span>
+        <select class="ui-select" formControlName="workMode">
+          @for (option of modeOptions; track option[0]) {
+            <option [value]="option[0]">{{ option[1] }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <label class="ui-field">
+      <span class="ui-field__label">Ubicación (opcional)</span>
+      <input class="ui-input" type="text" formControlName="location" />
+    </label>
+
+    <div class="job-form__row">
+      <label class="ui-field">
+        <span class="ui-field__label">Salario mínimo</span>
+        <input class="ui-input" type="number" min="0" formControlName="salaryMin" />
+      </label>
+      <label class="ui-field">
+        <span class="ui-field__label">Salario máximo</span>
+        <input class="ui-input" type="number" min="0" formControlName="salaryMax" />
+      </label>
+      <label class="ui-field">
+        <span class="ui-field__label">Moneda</span>
+        <input class="ui-input" type="text" maxlength="3" formControlName="salaryCurrency" />
+      </label>
+    </div>
+
+    <fieldset class="job-form__skills">
+      <legend class="ui-field__label">Skills</legend>
+      @for (skill of skills(); track skill.id) {
+        <div class="job-form__skill">
+          <label class="ui-checkbox">
+            <input type="checkbox" [checked]="selectedSkills().has(skill.id)" (change)="toggleSkill(skill.id, $any($event.target).checked)" />
+            {{ skill.name }}
+          </label>
+          @if (selectedSkills().has(skill.id)) {
+            <label class="ui-checkbox ui-muted">
+              <input type="checkbox" [checked]="selectedSkills().get(skill.id)" (change)="setRequired(skill.id, $any($event.target).checked)" />
+              requerida
+            </label>
+          }
+        </div>
+      }
+    </fieldset>
+
+    @if (error()) {
+      <p class="ui-form__error">{{ error() }}</p>
+    }
+
+    <div class="ui-form__actions">
+      <ui-button type="submit" [disabled]="saving()">Guardar borrador</ui-button>
+    </div>
+  </form>
+</main>

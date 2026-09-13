@@ -1,0 +1,57 @@
+<main class="page">
+  <a class="page__back" routerLink="/empresa/ofertas">← Ofertas de mi empresa</a>
+
+  @if (failed()) {
+    <p class="ui-form__error">No se pudo cargar la oferta.</p>
+  } @else if (job(); as job) {
+    <ui-section-header [heading]="job.title" subtitle="Postulantes" />
+  }
+
+  @if (error()) {
+    <p class="ui-form__error">{{ error() }}</p>
+  }
+
+  @if (applicants(); as applicants) {
+    @if (applicants.length === 0) {
+      <p class="ui-muted">Todavía nadie ha postulado.</p>
+    }
+    <div class="page__grid">
+      @for (applicant of applicants; track applicant.id) {
+        <ui-card [heading]="applicant.worker.fullName">
+          @if (applicant.worker.headline) {
+            <p class="job-applicants__headline">{{ applicant.worker.headline }}</p>
+          }
+          @if (applicant.worker.skills.length) {
+            <div class="ui-tags">
+              @for (skill of applicant.worker.skills; track skill) {
+                <ui-tag>{{ skill }}</ui-tag>
+              }
+            </div>
+          }
+          @if (applicant.coverLetter) {
+            <p class="job-applicants__letter">{{ applicant.coverLetter }}</p>
+          }
+          <p>
+            <ui-tag>{{ statusLabels[applicant.status] }}</ui-tag>
+            <span class="ui-muted job-applicants__date">{{ applicant.appliedAt | date: 'mediumDate' }}</span>
+          </p>
+
+          @if (nextStatuses(applicant); as next) {
+            @if (next.length) {
+              <input #note class="ui-input" type="text" placeholder="Nota (opcional)" maxlength="2000" />
+              <div class="ui-form__actions">
+                @for (status of next; track status) {
+                  <ui-button [variant]="status === 'rejected' ? 'ghost' : 'primary'" (clicked)="move(applicant, status, note.value)">
+                    {{ statusLabels[status] }}
+                  </ui-button>
+                }
+              </div>
+            }
+          }
+        </ui-card>
+      }
+    </div>
+  } @else if (!failed()) {
+    <p class="ui-muted">Cargando…</p>
+  }
+</main>

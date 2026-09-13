@@ -7,28 +7,19 @@
   min-width: 0;
 }
 
-.app-header {
+// Solo en móvil: abre el drawer de secciones
+.app-toolbar {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   border-bottom: 1px solid var(--ui-color-border);
 }
 
-.app-header__brand {
-  flex: 1;
-  font-weight: 700;
+.app-toolbar__title {
+  font-weight: 600;
 }
 
-.app-header__switch {
-  font-size: 0.875rem;
-  color: var(--ui-color-primary);
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
 
 .app-menu-button {
   display: inline-flex;
@@ -45,7 +36,7 @@
 }
 
 @media (min-width: 768px) {
-  .app-menu-button {
+  .app-toolbar {
     display: none;
   }
 }

@@ -15,6 +15,7 @@
   --ui-color-on-primary: #0b1120;
   --ui-color-accent-bg: #172554;
   --ui-color-accent-text: #93c5fd;
+  --ui-color-danger: #f87171;
 }
 
 :root {
@@ -32,6 +33,7 @@
   --ui-color-on-primary: #ffffff;
   --ui-color-accent-bg: #eff6ff;
   --ui-color-accent-text: #1d4ed8;
+  --ui-color-danger: #dc2626;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -49,4 +51,102 @@ body {
   font-family: system-ui, sans-serif;
   background-color: var(--ui-color-bg);
   color: var(--ui-color-text);
+}
+
+// Formularios: clases globales para controles nativos (no hay componentes de formulario en shared/ui)
+.ui-field {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.ui-field__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ui-color-text-body);
+}
+
+.ui-input,
+.ui-select,
+.ui-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--ui-color-border-strong);
+  border-radius: 0.5rem;
+  background-color: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  font: inherit;
+
+  &:focus {
+    outline: 2px solid var(--ui-color-primary);
+    outline-offset: 1px;
+    border-color: var(--ui-color-primary);
+  }
+}
+
+.ui-textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.ui-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ui-color-text-body);
+}
+
+.ui-form__error {
+  margin: 0.5rem 0;
+  color: var(--ui-color-danger);
+  font-size: 0.875rem;
+}
+
+.ui-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.ui-muted {
+  color: var(--ui-color-text-muted);
+}
+
+.ui-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+// Páginas con sesión (dentro de Shell)
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page--narrow {
+  max-width: 720px;
+}
+
+.page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.page__back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--ui-color-text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--ui-color-text);
+  }
 }

@@ -1,0 +1,34 @@
+<main class="page">
+  <ui-section-header heading="Ofertas" subtitle="Ofertas publicadas por las empresas." />
+
+  @if (failed()) {
+    <p class="ui-form__error">No se pudieron cargar las ofertas.</p>
+  } @else if (jobs(); as jobs) {
+    @if (jobs.length === 0) {
+      <p class="ui-muted">No hay ofertas publicadas.</p>
+    }
+    <div class="page__grid">
+      @for (job of jobs; track job.id) {
+        <ui-card [heading]="job.title">
+          <p class="job-list__company">{{ job.company.name }}</p>
+          <div class="ui-tags">
+            <ui-tag>{{ typeLabels[job.employmentType] }}</ui-tag>
+            <ui-tag>{{ modeLabels[job.workMode] }}</ui-tag>
+            @if (job.location) {
+              <ui-tag>{{ job.location }}</ui-tag>
+            }
+          </div>
+          @if (salary(job); as salary) {
+            <p class="job-list__salary">{{ salary }}</p>
+          }
+          @if (job.skills.length) {
+            <p class="ui-muted job-list__skills">{{ job.skills.map((s) => s.name).join(' · ') }}</p>
+          }
+          <a class="job-list__link" [routerLink]="['/ofertas', job.id]">Ver oferta →</a>
+        </ui-card>
+      }
+    </div>
+  } @else {
+    <p class="ui-muted">Cargando ofertas…</p>
+  }
+</main>

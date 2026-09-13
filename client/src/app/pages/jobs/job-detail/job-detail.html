@@ -1,0 +1,50 @@
+<main class="page">
+  <a class="page__back" routerLink="/ofertas">← Ofertas</a>
+
+  @if (failed()) {
+    <p class="ui-form__error">No se encontró la oferta.</p>
+  } @else if (job(); as job) {
+    <ui-section-header [heading]="job.title" [subtitle]="job.company.name" />
+
+    <div class="ui-tags">
+      <ui-tag>{{ typeLabels[job.employmentType] }}</ui-tag>
+      <ui-tag>{{ modeLabels[job.workMode] }}</ui-tag>
+      @if (job.location) {
+        <ui-tag>{{ job.location }}</ui-tag>
+      }
+    </div>
+    @if (salary(job); as salary) {
+      <p class="job-detail__salary">{{ salary }}</p>
+    }
+
+    <p class="job-detail__description">{{ job.description }}</p>
+
+    @if (job.skills.length) {
+      <h3 class="job-detail__subheading">Skills</h3>
+      <ul class="job-detail__skills">
+        @for (skill of job.skills; track skill.id) {
+          <li>{{ skill.name }} <span class="ui-muted">{{ skill.required ? '(requerida)' : '(deseable)' }}</span></li>
+        }
+      </ul>
+    }
+
+    @if (application(); as application) {
+      <ui-card heading="Tu postulación">
+        <p>Estado: <ui-tag>{{ statusLabels[application.status] }}</ui-tag></p>
+      </ui-card>
+    } @else {
+      <ui-card heading="Postular">
+        <label class="ui-field">
+          <span class="ui-field__label">Carta de presentación (opcional)</span>
+          <textarea class="ui-textarea" name="coverLetter" [(ngModel)]="coverLetter" maxlength="5000"></textarea>
+        </label>
+        @if (error()) {
+          <p class="ui-form__error">{{ error() }}</p>
+        }
+        <ui-button (clicked)="apply()" [disabled]="sending()">Postular</ui-button>
+      </ui-card>
+    }
+  } @else {
+    <p class="ui-muted">Cargando…</p>
+  }
+</main>

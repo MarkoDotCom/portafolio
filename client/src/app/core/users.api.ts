@@ -12,7 +12,7 @@ export interface UserSummary {
   email: string;
   headline: string | null;
   roles: UserRole[];
-  companies: string[];
+  companies: { id: string; name: string; role: 'owner' | 'recruiter' }[];
 }
 
 @Injectable({ providedIn: 'root' })

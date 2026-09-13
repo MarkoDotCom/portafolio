@@ -1,0 +1,23 @@
+.job-form {
+  margin-top: 1.5rem;
+}
+
+.job-form__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0 1rem;
+}
+
+.job-form__skills {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px solid var(--ui-color-border);
+  border-radius: 0.5rem;
+}
+
+.job-form__skill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0.25rem 0;
+}

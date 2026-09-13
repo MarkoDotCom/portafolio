@@ -1,0 +1,26 @@
+.job-list__company {
+  margin: 0 0 0.75rem;
+  font-weight: 500;
+}
+
+.job-list__salary {
+  margin: 0.75rem 0 0;
+  font-weight: 500;
+}
+
+.job-list__skills {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+}
+
+.job-list__link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--ui-color-primary);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

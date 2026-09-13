@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { userSubtitle } from '../../core/labels';
 import { Session } from '../../core/session';
 import {
   Button,
@@ -11,17 +11,17 @@ import {
   Sidebar,
   type SidebarItem,
   Tag,
-  ThemeToggle,
 } from '../../shared/ui';
 
 @Component({
   selector: 'app-portfolio',
-  imports: [RouterLink, Button, Card, Link, ProfileCard, ProgressBar, SectionHeader, Sidebar, Tag, ThemeToggle],
+  imports: [Button, Card, Link, ProfileCard, ProgressBar, SectionHeader, Sidebar, Tag],
   templateUrl: './portfolio.html',
   styleUrl: './portfolio.scss',
 })
 export class Portfolio {
   protected readonly user = inject(Session).currentUser;
+  protected readonly subtitle = userSubtitle;
 
   protected readonly sections: SidebarItem[] = [
     { id: 'inicio', label: 'Inicio' },
