@@ -20,6 +20,16 @@
   font-weight: 700;
 }
 
+.app-header__switch {
+  font-size: 0.875rem;
+  color: var(--ui-color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .app-menu-button {
   display: inline-flex;
   padding: 0.375rem;

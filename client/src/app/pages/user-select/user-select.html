@@ -1,0 +1,33 @@
+<header class="user-select__header">
+  <span class="user-select__brand">Portafolio</span>
+  <ui-theme-toggle />
+</header>
+
+<main class="user-select">
+  <ui-section-header heading="¿Quién eres?" subtitle="Elige un usuario para entrar." />
+
+  @if (failed()) {
+    <p class="user-select__error">
+      No se pudo cargar la lista de usuarios. Comprueba que la API responda en {{ apiUrl }}.
+    </p>
+  } @else if (users(); as users) {
+    <div class="user-select__grid">
+      @for (user of users; track user.id) {
+        <ui-profile-card
+          imageSrc="avatar-placeholder.svg"
+          [name]="user.fullName"
+          [subtitle]="user.headline ?? user.companies.join(', ')"
+        >
+          <div class="user-select__roles">
+            @for (role of user.roles; track role) {
+              <ui-tag>{{ roleLabels[role] }}</ui-tag>
+            }
+          </div>
+          <ui-button (clicked)="enter(user)">Entrar</ui-button>
+        </ui-profile-card>
+      }
+    </div>
+  } @else {
+    <p class="user-select__loading">Cargando usuarios…</p>
+  }
+</main>
