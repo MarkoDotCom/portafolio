@@ -1,0 +1,41 @@
+# Entorno de desarrollo del portafolio.
+#   docker compose up -d db        # solo la base de datos
+#   docker compose up              # base + cliente Angular (http://localhost:4200)
+#   docker compose down -v         # borra el volumen: schema.sql y seed.sql se reejecutan al subir
+# Variables en .env (ver .env.example).
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # Se ejecutan en orden alfabético solo cuando el volumen está vacío
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  client:
+    # glibc (no alpine): los binarios nativos de esbuild/vite no son compatibles con musl
+    image: node:24-bookworm-slim
+    working_dir: /app
+    # Instala dependencias solo la primera vez (quedan en el volumen client-node-modules)
+    command: sh -c "[ -x node_modules/.bin/ng ] || npm ci; exec npx ng serve --host 0.0.0.0"
+    ports:
+      - "${CLIENT_PORT:-4200}:4200"
+    volumes:
+      - ./client:/app
+      - client-node-modules:/app/node_modules
+
+volumes:
+  db-data:
+  client-node-modules:

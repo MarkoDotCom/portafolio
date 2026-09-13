@@ -1,0 +1,259 @@
+%% Modelo de datos — marketplace laboral (PostgreSQL)
+%% Fuente de verdad: schema.sql. Renderizar: mmdc -i modelo.mmd -o modelo.svg
+erDiagram
+
+  %% ---------------------------------------------------------------
+  %% Relaciones
+  %% ---------------------------------------------------------------
+  app_user ||--o| worker_profile : "es trabajador"
+  app_user ||--o{ company_member : "pertenece a"
+  company  ||--o{ company_member : "es empleador via"
+  app_user ||--o{ media_asset : "sube"
+  media_asset o|--o| app_user : "avatar"
+  media_asset o|--o{ company : "logo"
+  app_user o|--o{ company : "created_by"
+
+  worker_profile ||--o{ social_link : ""
+  worker_profile ||--o{ experience : ""
+  worker_profile ||--o{ education : ""
+  worker_profile ||--o{ certification : ""
+  worker_profile ||--o{ project : ""
+  worker_profile ||--o{ worker_skill : ""
+  worker_profile ||--o{ job_application : "postula"
+
+  company     o|--o{ experience : "si esta registrada"
+  media_asset o|--o{ project : "cover"
+  project     ||--o{ project_media : ""
+  media_asset ||--o{ project_media : ""
+
+  skill      ||--o{ worker_skill : ""
+  skill      ||--o{ experience_skill : ""
+  skill      ||--o{ project_skill : ""
+  skill      ||--o{ job_posting_skill : ""
+  experience ||--o{ experience_skill : ""
+  project    ||--o{ project_skill : ""
+
+  company         ||--o{ job_posting : "publica"
+  app_user        o|--o{ job_posting : "created_by"
+  job_posting     ||--o{ job_posting_skill : "requiere"
+  job_posting     ||--o{ job_application : "recibe"
+  job_application ||--o{ job_application_event : "historial"
+  app_user        o|--o{ job_application_event : "changed_by"
+
+  %% ---------------------------------------------------------------
+  %% 1. Identidad y actores
+  %% ---------------------------------------------------------------
+  app_user {
+    uuid id PK
+    citext email UK
+    text external_auth_id UK "id del proveedor de identidad"
+    text full_name
+    uuid avatar_media_id FK "nullable"
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  media_asset {
+    uuid id PK
+    uuid owner_id FK
+    text storage_key UK
+    text url
+    text mime_type
+    bigint size_bytes
+    text alt_text "nullable"
+    timestamptz created_at
+  }
+
+  worker_profile {
+    uuid user_id PK,FK
+    citext slug UK "URL publica"
+    text headline "nullable"
+    text summary "nullable"
+    text location "nullable"
+    boolean is_public
+    boolean open_to_work
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  company {
+    uuid id PK
+    citext slug UK "URL publica"
+    text name
+    text description "nullable"
+    text website_url "nullable"
+    text industry "nullable"
+    company_size size "enum, nullable"
+    text location "nullable"
+    uuid logo_media_id FK "nullable"
+    uuid created_by FK "nullable"
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  company_member {
+    uuid company_id PK,FK
+    uuid user_id PK,FK
+    company_role role "enum: owner | recruiter"
+    timestamptz created_at
+  }
+
+  %% ---------------------------------------------------------------
+  %% 2. Perfil del trabajador
+  %% ---------------------------------------------------------------
+  social_link {
+    uuid id PK
+    uuid worker_id FK
+    social_platform platform "enum"
+    text url
+    int sort_order
+    timestamptz created_at
+  }
+
+  experience {
+    uuid id PK
+    uuid worker_id FK
+    uuid company_id FK "nullable, si existe en la plataforma"
+    text company_name
+    text title
+    employment_type employment_type "enum, nullable"
+    work_mode work_mode "enum, nullable"
+    text location "nullable"
+    date start_date
+    date end_date "NULL = actualidad"
+    text description "nullable"
+    boolean is_visible
+    int sort_order
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  education {
+    uuid id PK
+    uuid worker_id FK
+    text institution
+    text degree
+    text field_of_study "nullable"
+    date start_date
+    date end_date "nullable"
+    text description "nullable"
+    boolean is_visible
+    int sort_order
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  certification {
+    uuid id PK
+    uuid worker_id FK
+    text name
+    text issuer
+    date issued_at
+    date expires_at "nullable"
+    text credential_id "nullable"
+    text credential_url "nullable"
+    boolean is_visible
+    int sort_order
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  project {
+    uuid id PK
+    uuid worker_id FK
+    citext slug "UNIQUE (worker_id, slug)"
+    text title
+    text summary "nullable"
+    text description "nullable"
+    text repo_url "nullable"
+    text demo_url "nullable"
+    uuid cover_media_id FK "nullable"
+    date started_at "nullable"
+    date ended_at "nullable"
+    boolean is_featured
+    boolean is_visible
+    int sort_order
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  project_media {
+    uuid project_id PK,FK
+    uuid media_id PK,FK
+    int sort_order
+  }
+
+  %% ---------------------------------------------------------------
+  %% 3. Skills (catalogo global)
+  %% ---------------------------------------------------------------
+  skill {
+    uuid id PK
+    citext name UK
+    skill_category category "enum"
+    timestamptz created_at
+  }
+
+  worker_skill {
+    uuid worker_id PK,FK
+    uuid skill_id PK,FK
+    smallint level "1..5, nullable"
+    int sort_order
+  }
+
+  experience_skill {
+    uuid experience_id PK,FK
+    uuid skill_id PK,FK
+  }
+
+  project_skill {
+    uuid project_id PK,FK
+    uuid skill_id PK,FK
+  }
+
+  %% ---------------------------------------------------------------
+  %% 4. Empleo
+  %% ---------------------------------------------------------------
+  job_posting {
+    uuid id PK
+    uuid company_id FK
+    uuid created_by FK "nullable"
+    text title
+    text description
+    employment_type employment_type "enum"
+    work_mode work_mode "enum"
+    text location "nullable"
+    numeric salary_min "nullable"
+    numeric salary_max "nullable"
+    char(3) salary_currency "ISO 4217, obligatorio si hay salario"
+    job_status status "enum: draft | published | closed"
+    timestamptz published_at "obligatorio si status <> draft"
+    timestamptz closes_at "nullable"
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  job_posting_skill {
+    uuid job_posting_id PK,FK
+    uuid skill_id PK,FK
+    boolean is_required "false = deseable"
+  }
+
+  job_application {
+    uuid id PK
+    uuid job_posting_id FK "UNIQUE (job_posting_id, worker_id)"
+    uuid worker_id FK
+    application_status status "enum: applied | reviewing | interview | offer | rejected | withdrawn"
+    text cover_letter "nullable"
+    timestamptz applied_at
+    timestamptz updated_at
+  }
+
+  job_application_event {
+    uuid id PK
+    uuid application_id FK
+    uuid changed_by FK "nullable"
+    application_status from_status "NULL en el evento inicial"
+    application_status to_status
+    text note "nullable"
+    timestamptz created_at
+  }
