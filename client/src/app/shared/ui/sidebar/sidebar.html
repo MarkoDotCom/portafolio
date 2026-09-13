@@ -1,0 +1,30 @@
+@if (open()) {
+  <div class="ui-sidebar__backdrop" (click)="close()"></div>
+}
+
+<nav class="ui-sidebar" [class.ui-sidebar--open]="open()" aria-label="Menú principal">
+  <div class="ui-sidebar__header">
+    <span class="ui-sidebar__title">Menú</span>
+    <button type="button" class="ui-sidebar__close" aria-label="Cerrar menú" (click)="close()">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <ul class="ui-sidebar__list">
+    @for (item of items(); track item.id) {
+      <li>
+        <a
+          class="ui-sidebar__link"
+          [class.ui-sidebar__link--active]="item.id === activeId()"
+          [href]="'#' + item.id"
+          [attr.aria-current]="item.id === activeId() ? 'true' : null"
+          (click)="close()"
+        >
+          {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

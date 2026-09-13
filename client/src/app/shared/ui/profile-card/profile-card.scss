@@ -1,0 +1,36 @@
+.ui-profile-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.ui-profile-card__image {
+  flex-shrink: 0;
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.ui-profile-card__content {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.ui-profile-card__name {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ui-color-text);
+}
+
+.ui-profile-card__subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ui-color-text-muted);
+}
+
+.ui-profile-card__text {
+  margin-top: 0.75rem;
+}

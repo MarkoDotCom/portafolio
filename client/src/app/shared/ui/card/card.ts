@@ -6,5 +6,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './card.scss',
 })
 export class Card {
-  readonly title = input<string>();
+  readonly heading = input<string>();
 }

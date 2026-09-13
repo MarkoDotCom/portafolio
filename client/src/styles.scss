@@ -1,1 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
+
+@mixin dark-theme {
+  color-scheme: dark;
+  --ui-color-bg: #0b1120;
+  --ui-color-surface: #111827;
+  --ui-color-border: #1f2937;
+  --ui-color-border-strong: #374151;
+  --ui-color-hover: #1f2937;
+  --ui-color-text: #f9fafb;
+  --ui-color-text-body: #d1d5db;
+  --ui-color-text-muted: #9ca3af;
+  --ui-color-primary: #60a5fa;
+  --ui-color-primary-hover: #3b82f6;
+  --ui-color-on-primary: #0b1120;
+  --ui-color-accent-bg: #172554;
+  --ui-color-accent-text: #93c5fd;
+}
+
+:root {
+  color-scheme: light;
+  --ui-color-bg: #ffffff;
+  --ui-color-surface: #ffffff;
+  --ui-color-border: #e5e7eb;
+  --ui-color-border-strong: #d1d5db;
+  --ui-color-hover: #f3f4f6;
+  --ui-color-text: #111827;
+  --ui-color-text-body: #374151;
+  --ui-color-text-muted: #6b7280;
+  --ui-color-primary: #2563eb;
+  --ui-color-primary-hover: #1d4ed8;
+  --ui-color-on-primary: #ffffff;
+  --ui-color-accent-bg: #eff6ff;
+  --ui-color-accent-text: #1d4ed8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-theme;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-theme;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: var(--ui-color-bg);
+  color: var(--ui-color-text);
+}

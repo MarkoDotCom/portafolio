@@ -6,6 +6,6 @@ import { Component, input } from '@angular/core';
   styleUrl: './section-header.scss',
 })
 export class SectionHeader {
-  readonly title = input.required<string>();
+  readonly heading = input.required<string>();
   readonly subtitle = input<string>();
 }
