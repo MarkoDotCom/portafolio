@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { config } from 'dotenv';
 import { defineConfig } from 'prisma/config';
 
-// Un solo .env para todo el repo: proyectos/portafolio/.env
+// Un solo .env para todo el repo: proyectos/bolsa-laboral/.env
 config({ path: fileURLToPath(new URL('../../.env', import.meta.url)) });
 
 export default defineConfig({

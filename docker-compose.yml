@@ -7,6 +7,9 @@
 # api y client corren con tu uid y usan el node_modules del host (mismo Linux x64/glibc), así lo que
 # generan (dist, generated, .angular) queda con tu usuario. Requiere `npm install` previo en cada carpeta.
 
+# Nombre del proyecto compose (contenedores, red y volúmenes), independiente del nombre de la carpeta
+name: bolsa-laboral
+
 services:
   db:
     image: postgres:16-alpine

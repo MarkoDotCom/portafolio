@@ -14,7 +14,7 @@ Una misma cuenta puede ser ambas cosas y administrar varias empresas.
 | `schema.sql` | Enums, tablas, constraints, índices y triggers `updated_at` |
 | `seed.sql`   | Datos de ejemplo: 4 usuarios, 1 empresa, 3 ofertas, 3 postulaciones |
 
-Con Docker (desde `proyectos/portafolio/`, credenciales en `.env`):
+Con Docker (desde `proyectos/bolsa-laboral/`, credenciales en `.env`):
 
 ```bash
 docker compose up -d db

@@ -13,7 +13,7 @@ import { RestModule } from './rest/rest.module.js';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      // Un solo .env para todo el repo: proyectos/portafolio/.env. Las variables ya presentes en el entorno (compose) tienen prioridad.
+      // Un solo .env para todo el repo: proyectos/bolsa-laboral/.env. Las variables ya presentes en el entorno (compose) tienen prioridad.
       envFilePath: fileURLToPath(new URL('../../../.env', import.meta.url)),
     }),
     DatabaseModule,
