@@ -1,0 +1,490 @@
+// Tokens compartidos con client/src/styles.scss: si cambia la paleta de la app, cambiar aquí también.
+@mixin dark-theme {
+  color-scheme: dark;
+  --ui-color-bg: #0b1120;
+  --ui-color-surface: #111827;
+  --ui-color-border: #1f2937;
+  --ui-color-border-strong: #374151;
+  --ui-color-hover: #1f2937;
+  --ui-color-text: #f9fafb;
+  --ui-color-text-body: #d1d5db;
+  --ui-color-text-muted: #9ca3af;
+  --ui-color-primary: #60a5fa;
+  --ui-color-primary-hover: #3b82f6;
+  --ui-color-on-primary: #0b1120;
+  --ui-color-accent-bg: #172554;
+  --ui-color-accent-text: #93c5fd;
+  --ui-color-ink: #f9fafb;
+}
+
+:root {
+  color-scheme: light;
+  --ui-color-bg: #ffffff;
+  --ui-color-surface: #ffffff;
+  --ui-color-border: #e5e7eb;
+  --ui-color-border-strong: #d1d5db;
+  --ui-color-hover: #f3f4f6;
+  --ui-color-text: #111827;
+  --ui-color-text-body: #374151;
+  --ui-color-text-muted: #6b7280;
+  --ui-color-primary: #2563eb;
+  --ui-color-primary-hover: #1d4ed8;
+  --ui-color-on-primary: #ffffff;
+  --ui-color-accent-bg: #eff6ff;
+  --ui-color-accent-text: #1d4ed8;
+  // Solo landing: sombra sólida del perfil del hero
+  --ui-color-ink: #0b1120;
+
+  --font-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --measure: 34rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark-theme;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  background-color: var(--ui-color-bg);
+  color: var(--ui-color-text);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--ui-color-primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--ui-color-primary);
+  outline-offset: 3px;
+}
+
+// ---------- botones ----------
+.button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &--primary {
+    background-color: var(--ui-color-primary);
+    color: var(--ui-color-on-primary);
+
+    &:hover {
+      background-color: var(--ui-color-primary-hover);
+    }
+  }
+
+  &--ghost {
+    border-color: var(--ui-color-border-strong);
+    color: var(--ui-color-text);
+
+    &:hover {
+      background-color: var(--ui-color-hover);
+    }
+  }
+
+  &--large {
+    padding: 0.85rem 1.6rem;
+    font-size: 1.0625rem;
+  }
+}
+
+// ---------- cabecera ----------
+.top {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.25rem var(--gutter);
+}
+
+.top__brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ui-color-text);
+  text-decoration: none;
+}
+
+.top__nav {
+  display: flex;
+  gap: 1.25rem;
+  flex: 1;
+
+  a {
+    color: var(--ui-color-text-body);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--ui-color-text);
+    }
+  }
+}
+
+// ---------- hero ----------
+.hero {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6rem) var(--gutter);
+}
+
+.hero__title {
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  max-width: 12ch;
+}
+
+.hero__lead {
+  max-width: var(--measure);
+  margin-top: 1.5rem;
+  font-size: 1.25rem;
+  color: var(--ui-color-text-body);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+// El perfil: el único elemento con peso visual propio (sombra sólida, no difusa)
+.profile {
+  position: relative;
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--ui-color-text);
+  border-radius: 0.75rem;
+  background-color: var(--ui-color-surface);
+  box-shadow: 0.75rem 0.75rem 0 var(--ui-color-primary);
+  font-size: 0.9375rem;
+}
+
+.profile__status {
+  position: absolute;
+  top: -0.9rem;
+  right: 1.25rem;
+  display: inline-flex;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--ui-color-text);
+  border-radius: 9999px;
+  background-color: var(--ui-color-accent-bg);
+  color: var(--ui-color-accent-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.profile__status-label {
+  color: var(--ui-color-text-muted);
+  font-weight: 500;
+}
+
+.profile__head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.profile__avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--ui-color-ink);
+  color: var(--ui-color-bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.profile__name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.profile__headline {
+  margin-top: 0.15rem;
+  color: var(--ui-color-text-body);
+}
+
+.profile__meta {
+  margin-top: 0.15rem;
+  font-size: 0.875rem;
+  color: var(--ui-color-text-muted);
+}
+
+.skills {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skills__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 0.75rem;
+  align-items: baseline;
+}
+
+.skills__name {
+  font-weight: 500;
+}
+
+.skills__match {
+  padding: 0.1rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--ui-color-accent-bg);
+  color: var(--ui-color-accent-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &--optional {
+    background-color: transparent;
+    border: 1px solid var(--ui-color-border-strong);
+    color: var(--ui-color-text-muted);
+  }
+}
+
+.skills__bar {
+  grid-column: 1 / -1;
+  display: block;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--ui-color-border);
+  overflow: hidden;
+}
+
+.skills__fill {
+  display: block;
+  width: var(--level);
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--ui-color-primary);
+  transform-origin: left;
+  animation: fill 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills__fill {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.profile__facts {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ui-color-border);
+
+  dt {
+    font-size: 0.8125rem;
+    color: var(--ui-color-text-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+// ---------- secciones ----------
+.section-title {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+}
+
+.actors,
+.steps,
+.closing {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 5.5rem) var(--gutter);
+}
+
+.actors {
+  border-top: 1px solid var(--ui-color-border);
+}
+
+.actors__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 2.5rem;
+}
+
+.actor + .actor {
+  padding-left: 3rem;
+  border-left: 1px solid var(--ui-color-border-strong);
+}
+
+.actor__title {
+  font-size: 1.5rem;
+}
+
+.actor__list {
+  margin: 1.25rem 0 0;
+  padding-left: 1.25rem;
+  max-width: var(--measure);
+  color: var(--ui-color-text-body);
+
+  li + li {
+    margin-top: 0.75rem;
+  }
+}
+
+.steps {
+  background-color: var(--ui-color-accent-bg);
+  max-width: none;
+}
+
+// Mismo ancho de contenido que las demás secciones (72rem con el gutter incluido)
+.steps .section-title,
+.steps__list {
+  max-width: calc(72rem - 2 * var(--gutter));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.steps__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.step {
+  counter-increment: step;
+  padding-top: 1rem;
+  border-top: 2px solid var(--ui-color-primary);
+  color: var(--ui-color-text-body);
+
+  // Es una secuencia real: el número aporta orden
+  &::before {
+    content: counter(step);
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ui-color-primary);
+  }
+}
+
+.step__title {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1.375rem;
+  color: var(--ui-color-text);
+}
+
+.closing {
+  text-align: left;
+}
+
+.closing__title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  max-width: 14ch;
+}
+
+.closing__lead {
+  max-width: var(--measure);
+  margin: 1.25rem 0 2rem;
+  font-size: 1.25rem;
+  color: var(--ui-color-text-body);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem var(--gutter) 2.5rem;
+  border-top: 1px solid var(--ui-color-border);
+  font-size: 0.875rem;
+  color: var(--ui-color-text-muted);
+}
+
+// ---------- responsive ----------
+@media (max-width: 47.98rem) {
+  .top__nav {
+    display: none;
+  }
+
+  .hero,
+  .actors__grid,
+  .steps__list {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    gap: 3.5rem;
+  }
+
+  .profile {
+    box-shadow: 0.5rem 0.5rem 0 var(--ui-color-primary);
+  }
+
+  .actor + .actor {
+    padding-left: 0;
+    padding-top: 2.5rem;
+    border-left: 0;
+    border-top: 1px solid var(--ui-color-border-strong);
+  }
+}

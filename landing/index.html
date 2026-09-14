@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bolsa Laboral — tu trabajo habla por ti</title>
+    <meta name="description" content="Publica tu portafolio con skills, proyectos y experiencia; postula a ofertas y sigue cada proceso. Las empresas ven perfiles reales, no CV en PDF." />
+    <meta property="og:title" content="Bolsa Laboral — tu trabajo habla por ti" />
+    <meta property="og:description" content="Perfiles reales con skills por nivel, proyectos y experiencia. Ofertas, postulaciones y seguimiento del proceso en un solo lugar." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="top__brand" href="/">Bolsa Laboral</a>
+      <nav class="top__nav" aria-label="Secciones">
+        <a href="#actores">Para quién</a>
+        <a href="#como-funciona">Cómo funciona</a>
+      </nav>
+      <a class="button button--primary" href="http://localhost:4200/" data-app-link>Entrar</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero__copy">
+          <h1 class="hero__title">Tu trabajo habla por ti.</h1>
+          <p class="hero__lead">
+            Arma tu portafolio una vez —skills con nivel, proyectos, experiencia— y postula a ofertas
+            de empresas que buscan exactamente eso. Ellas ven tu perfil real, no un PDF.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary button--large" href="http://localhost:4200/" data-app-link>Entrar</a>
+            <a class="button button--ghost button--large" href="#como-funciona">Ver cómo funciona</a>
+          </div>
+        </div>
+
+        <!-- Perfil real del seed, tal como lo ve una empresa desde una postulación -->
+        <figure class="profile" aria-label="Ejemplo de perfil visto por una empresa">
+          <div class="profile__status">
+            <span class="profile__status-label">Postulación</span>
+            <span class="profile__status-value">Entrevista</span>
+          </div>
+          <div class="profile__head">
+            <span class="profile__avatar" aria-hidden="true">AR</span>
+            <div>
+              <p class="profile__name">Ana Rojas</p>
+              <p class="profile__headline">Frontend Engineer · Angular &amp; Design Systems</p>
+              <p class="profile__meta">Santiago, Chile. Disponible para trabajar.</p>
+            </div>
+          </div>
+          <ul class="skills">
+            <li class="skills__item" style="--level: 100%">
+              <span class="skills__name">Angular</span><span class="skills__match" title="Requerida en la oferta">coincide</span>
+              <span class="skills__bar"><span class="skills__fill"></span></span>
+            </li>
+            <li class="skills__item" style="--level: 100%">
+              <span class="skills__name">TypeScript</span><span class="skills__match" title="Requerida en la oferta">coincide</span>
+              <span class="skills__bar"><span class="skills__fill"></span></span>
+            </li>
+            <li class="skills__item" style="--level: 80%">
+              <span class="skills__name">SCSS</span><span class="skills__match skills__match--optional" title="Deseable en la oferta">deseable</span>
+              <span class="skills__bar"><span class="skills__fill"></span></span>
+            </li>
+            <li class="skills__item" style="--level: 60%">
+              <span class="skills__name">React</span>
+              <span class="skills__bar"><span class="skills__fill"></span></span>
+            </li>
+          </ul>
+          <dl class="profile__facts">
+            <div><dt>Experiencia</dt><dd>Senior Frontend Engineer en Agencia Pixel, desde 2022</dd></div>
+            <div><dt>Proyecto destacado</dt><dd>UI Kit accesible, hecho con Angular, TypeScript y SCSS</dd></div>
+          </dl>
+        </figure>
+      </section>
+
+      <section id="actores" class="actors">
+        <h2 class="section-title">Dos formas de entrar.</h2>
+        <div class="actors__grid">
+          <article class="actor">
+            <h3 class="actor__title">Si buscas trabajo</h3>
+            <ul class="actor__list">
+              <li>Arma tu portafolio una vez: skills con nivel, experiencia, formación, proyectos.</li>
+              <li>Postula en un clic a ofertas publicadas, con una carta si quieres.</li>
+              <li>Sigue cada postulación: en revisión, entrevista, oferta. Y retírala cuando quieras.</li>
+            </ul>
+          </article>
+          <article class="actor">
+            <h3 class="actor__title">Si buscas talento</h3>
+            <ul class="actor__list">
+              <li>Publica ofertas con las skills que necesitas, requeridas o deseables.</li>
+              <li>Abre el perfil completo de cada postulante, no un CV en PDF.</li>
+              <li>Mueve candidatos por el proceso con notas y un historial de cada cambio.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="steps">
+        <h2 class="section-title">Cómo funciona.</h2>
+        <ol class="steps__list">
+          <li class="step">
+            <h3 class="step__title">Publica</h3>
+            <p>Tu portafolio si buscas trabajo; tu oferta si buscas talento. Ambos parten como borrador hasta que decidas.</p>
+          </li>
+          <li class="step">
+            <h3 class="step__title">Conecta</h3>
+            <p>Las ofertas muestran qué skills piden y tu perfil muestra cuáles tienes. Postulas, o recibes postulantes, sin intermediarios.</p>
+          </li>
+          <li class="step">
+            <h3 class="step__title">Avanza</h3>
+            <p>Cada postulación tiene un estado y un historial. Los dos lados saben en qué punto está el proceso.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="closing">
+        <h2 class="closing__title">Empieza por tu perfil.</h2>
+        <p class="closing__lead">Es lo único que necesitas para postular. Las empresas que publican aquí lo van a leer completo.</p>
+        <a class="button button--primary button--large" href="http://localhost:4200/" data-app-link>Entrar</a>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>Bolsa Laboral</span>
+      <span>Proyecto en desarrollo</span>
+    </footer>
+  </body>
+</html>
