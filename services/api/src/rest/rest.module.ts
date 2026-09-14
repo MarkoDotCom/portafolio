@@ -11,4 +11,4 @@ import { UsersModule } from './users/users.module.js';
   imports: [AuthModule, UsersModule, SkillsModule, JobsModule, ApplicationsModule],
   controllers: [HealthController],
 })
-export class ApiModule {}
+export class RestModule {}

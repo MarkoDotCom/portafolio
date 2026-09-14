@@ -1,12 +1,12 @@
 import { fileURLToPath } from 'node:url';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ApiModule } from './api/api.module.js';
 import { DatabaseModule } from './database/database.module.js';
 import { IntegrationsModule } from './integrations/integrations.module.js';
+import { RestModule } from './rest/rest.module.js';
 
 // Tres capas con dependencias en un solo sentido:
-//   api  →  database, integrations        (endpoints HTTP de negocio)
+//   rest  →  database, integrations       (endpoints HTTP de negocio)
 //   integrations  →  (nada nuestro)        (APIs de terceros)
 //   database  →  (nada nuestro)            (tablas vía Prisma)
 @Module({
@@ -18,7 +18,7 @@ import { IntegrationsModule } from './integrations/integrations.module.js';
     }),
     DatabaseModule,
     IntegrationsModule,
-    ApiModule,
+    RestModule,
   ],
 })
 export class AppModule {}
