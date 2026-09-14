@@ -4,9 +4,10 @@ import { AppUserTable } from './tables/app-user.table.js';
 import { JobApplicationTable } from './tables/job-application.table.js';
 import { JobPostingTable } from './tables/job-posting.table.js';
 import { SkillTable } from './tables/skill.table.js';
+import { WorkerProfileTable } from './tables/worker-profile.table.js';
 
 // Único punto de acceso a la base: los módulos de negocio inyectan las tablas, no Prisma.
-const TABLES = [AppUserTable, SkillTable, JobPostingTable, JobApplicationTable];
+const TABLES = [AppUserTable, WorkerProfileTable, SkillTable, JobPostingTable, JobApplicationTable];
 
 @Global()
 @Module({

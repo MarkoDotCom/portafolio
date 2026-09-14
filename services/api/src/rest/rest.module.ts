@@ -5,10 +5,11 @@ import { HealthController } from './health/health.controller.js';
 import { JobsModule } from './jobs/jobs.module.js';
 import { SkillsModule } from './skills/skills.module.js';
 import { UsersModule } from './users/users.module.js';
+import { WorkersModule } from './workers/workers.module.js';
 
 // Endpoints HTTP de negocio. Usa DatabaseModule e IntegrationsModule; nunca al revés.
 @Module({
-  imports: [AuthModule, UsersModule, SkillsModule, JobsModule, ApplicationsModule],
+  imports: [AuthModule, UsersModule, WorkersModule, SkillsModule, JobsModule, ApplicationsModule],
   controllers: [HealthController],
 })
 export class RestModule {}
