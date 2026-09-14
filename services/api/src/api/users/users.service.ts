@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AppUserTable } from '../database/tables/app-user.table.js';
+import { AppUserTable } from '../../database/tables/app-user.table.js';
 
 export type UserRole = 'worker' | 'employer';
 

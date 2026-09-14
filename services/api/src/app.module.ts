@@ -1,14 +1,14 @@
 import { fileURLToPath } from 'node:url';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ApplicationsModule } from './applications/applications.module.js';
-import { AuthModule } from './auth/auth.module.js';
-import { HealthController } from './health/health.controller.js';
-import { JobsModule } from './jobs/jobs.module.js';
+import { ApiModule } from './api/api.module.js';
 import { DatabaseModule } from './database/database.module.js';
-import { SkillsModule } from './skills/skills.module.js';
-import { UsersModule } from './users/users.module.js';
+import { IntegrationsModule } from './integrations/integrations.module.js';
 
+// Tres capas con dependencias en un solo sentido:
+//   api  →  database, integrations        (endpoints HTTP de negocio)
+//   integrations  →  (nada nuestro)        (APIs de terceros)
+//   database  →  (nada nuestro)            (tablas vía Prisma)
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,12 +17,8 @@ import { UsersModule } from './users/users.module.js';
       envFilePath: fileURLToPath(new URL('../../../.env', import.meta.url)),
     }),
     DatabaseModule,
-    AuthModule,
-    UsersModule,
-    SkillsModule,
-    JobsModule,
-    ApplicationsModule,
+    IntegrationsModule,
+    ApiModule,
   ],
-  controllers: [HealthController],
 })
 export class AppModule {}

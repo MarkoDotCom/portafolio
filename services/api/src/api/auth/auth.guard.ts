@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { isUUID } from 'class-validator';
-import { AppUserTable } from '../database/tables/app-user.table.js';
+import { AppUserTable } from '../../database/tables/app-user.table.js';
 import { AUTH_ROLES } from './auth.decorators.js';
 import { hasRole, type RequestWithUser, type Role } from './current-user.js';
 

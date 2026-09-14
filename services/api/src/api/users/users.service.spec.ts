@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { AppUserTable } from '../database/tables/app-user.table.js';
+import { AppUserTable } from '../../database/tables/app-user.table.js';
 import { UsersService } from './users.service.js';
 
 describe('UsersService', () => {

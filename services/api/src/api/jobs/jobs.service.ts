@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { assertMember, type CurrentUserData } from '../auth/current-user.js';
-import { JobPostingTable, type JobDto } from '../database/tables/job-posting.table.js';
-import { SkillTable } from '../database/tables/skill.table.js';
+import { JobPostingTable, type JobDto } from '../../database/tables/job-posting.table.js';
+import { SkillTable } from '../../database/tables/skill.table.js';
 import type { CreateJobDto } from './dto/create-job.dto.js';
 import type { UpdateJobStatusDto } from './dto/update-job-status.dto.js';
 

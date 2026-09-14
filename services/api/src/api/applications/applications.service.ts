@@ -6,8 +6,8 @@ import {
   type ApplicantDto,
   type ApplicationDto,
   type ApplicationStatus,
-} from '../database/tables/job-application.table.js';
-import { JobPostingTable } from '../database/tables/job-posting.table.js';
+} from '../../database/tables/job-application.table.js';
+import { JobPostingTable } from '../../database/tables/job-posting.table.js';
 import type { CreateApplicationDto } from './dto/create-application.dto.js';
 import type { UpdateApplicationStatusDto } from './dto/update-application-status.dto.js';
 

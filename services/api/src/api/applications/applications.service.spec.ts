@@ -1,8 +1,8 @@
 import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import type { CurrentUserData } from '../auth/current-user.js';
-import { DuplicateApplicationError, JobApplicationTable } from '../database/tables/job-application.table.js';
-import { JobPostingTable } from '../database/tables/job-posting.table.js';
+import { DuplicateApplicationError, JobApplicationTable } from '../../database/tables/job-application.table.js';
+import { JobPostingTable } from '../../database/tables/job-posting.table.js';
 import { ApplicationsService } from './applications.service.js';
 
 const employer: CurrentUserData = { id: 'u4', fullName: 'Diego', isWorker: false, companies: [{ id: 'c1', role: 'recruiter' }] };

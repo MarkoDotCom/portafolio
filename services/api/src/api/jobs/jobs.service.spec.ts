@@ -1,8 +1,8 @@
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import type { CurrentUserData } from '../auth/current-user.js';
-import { JobPostingTable, type JobDto } from '../database/tables/job-posting.table.js';
-import { SkillTable } from '../database/tables/skill.table.js';
+import { JobPostingTable, type JobDto } from '../../database/tables/job-posting.table.js';
+import { SkillTable } from '../../database/tables/skill.table.js';
 import { JobsService } from './jobs.service.js';
 
 const employer: CurrentUserData = { id: 'u4', fullName: 'Diego', isWorker: false, companies: [{ id: 'c1', role: 'recruiter' }] };

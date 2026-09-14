@@ -3,7 +3,7 @@ import { Auth, CurrentUser } from '../auth/auth.decorators.js';
 import type { CurrentUserData } from '../auth/current-user.js';
 import { CreateJobDto } from './dto/create-job.dto.js';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto.js';
-import type { JobDto } from '../database/tables/job-posting.table.js';
+import type { JobDto } from '../../database/tables/job-posting.table.js';
 import { JobsService } from './jobs.service.js';
 
 @Auth()
