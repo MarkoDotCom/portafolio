@@ -47,9 +47,9 @@
   padding: 2rem 1.5rem;
 }
 
-// Alto mínimo mientras no haya contenido real, para que el menú alcance a marcar cada sección al hacer scroll
 .app-section {
-  min-height: 60vh;
+  margin-bottom: 3rem;
+  scroll-margin-top: 1rem;
 }
 
 .app-grid {
@@ -59,14 +59,69 @@
   margin-top: 1.5rem;
 }
 
-.app-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+
+
+.portfolio__text {
+  margin: 0.5rem 0 0;
+  white-space: pre-wrap;
+  color: var(--ui-color-text-body);
 }
 
-.app-stack {
+.portfolio__subheading {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1rem;
+}
+
+.portfolio__skills {
   display: grid;
+  gap: 0.75rem;
+}
+
+.portfolio__links {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.portfolio__timeline,
+.portfolio__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portfolio__item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--ui-color-border);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.portfolio__item-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.portfolio__item-meta {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ui-color-text-muted);
+}
+
+.portfolio__item-skills {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+}
+
+.portfolio__cover {
+  display: block;
+  width: 100%;
+  max-height: 10rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
 }

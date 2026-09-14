@@ -19,6 +19,7 @@ export const routes: Routes = [
     canActivate: [sessionGuard],
     children: [
       { path: 'portafolio', component: Portfolio },
+      { path: 'perfil/:id', component: Portfolio },
       { path: 'ofertas', component: JobList, canActivate: [roleGuard('worker')] },
       { path: 'ofertas/:id', component: JobDetail, canActivate: [roleGuard('worker')] },
       { path: 'postulaciones', component: MyApplications, canActivate: [roleGuard('worker')] },

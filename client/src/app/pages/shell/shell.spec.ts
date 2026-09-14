@@ -23,6 +23,6 @@ describe('Shell', () => {
   });
 
   it('should show company links for an employer', async () => {
-    expect(await navLinks(['employer'])).toEqual(['Ofertas de mi empresa', 'Mi portafolio']);
+    expect(await navLinks(['employer'])).toEqual(['Ofertas de mi empresa']);
   });
 });

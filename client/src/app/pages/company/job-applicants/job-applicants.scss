@@ -15,3 +15,13 @@
   margin-left: 0.5rem;
   font-size: 0.875rem;
 }
+
+.job-applicants__profile {
+  color: var(--ui-color-primary);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

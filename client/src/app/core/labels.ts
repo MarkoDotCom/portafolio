@@ -29,6 +29,24 @@ export const APPLICATION_STATUS_LABELS: Record<string, string> = {
   withdrawn: 'Retirada',
 };
 
+export const SKILL_CATEGORY_LABELS: Record<string, string> = {
+  language: 'Lenguajes',
+  framework: 'Frameworks',
+  tool: 'Herramientas',
+  database: 'Bases de datos',
+  cloud: 'Cloud',
+  soft_skill: 'Habilidades blandas',
+  other: 'Otras',
+};
+
+export const SOCIAL_PLATFORM_LABELS: Record<string, string> = {
+  github: 'GitHub',
+  linkedin: 'LinkedIn',
+  website: 'Sitio web',
+  twitter: 'Twitter',
+  other: 'Enlace',
+};
+
 // Espejo de las reglas de la API (applications.service.ts)
 export const TERMINAL_APPLICATION_STATUSES = ['offer', 'rejected', 'withdrawn'];
 

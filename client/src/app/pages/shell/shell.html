@@ -5,11 +5,11 @@
     @if (isWorker()) {
       <a class="shell__link" routerLink="/ofertas" routerLinkActive="shell__link--active">Ofertas</a>
       <a class="shell__link" routerLink="/postulaciones" routerLinkActive="shell__link--active">Mis postulaciones</a>
+      <a class="shell__link" routerLink="/portafolio" routerLinkActive="shell__link--active">Mi portafolio</a>
     }
     @if (isEmployer()) {
       <a class="shell__link" routerLink="/empresa/ofertas" routerLinkActive="shell__link--active">Ofertas de mi empresa</a>
     }
-    <a class="shell__link" routerLink="/portafolio" routerLinkActive="shell__link--active">Mi portafolio</a>
   </nav>
 
   <span class="shell__user">{{ user()?.fullName }}</span>

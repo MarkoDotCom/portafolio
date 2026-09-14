@@ -1,75 +1,189 @@
-@if (user(); as user) {
-<div class="app-layout">
-  <ui-sidebar [items]="sections" [(open)]="menuOpen" />
+@if (missing()) {
+  <main class="page">
+    <p class="ui-muted">{{ isOwn ? 'Tu usuario no tiene perfil de trabajador.' : 'Perfil no encontrado.' }}</p>
+  </main>
+} @else if (portfolio(); as p) {
+  <div class="app-layout">
+    <ui-sidebar [items]="sections" [(open)]="menuOpen" />
 
-  <div class="app-content">
-    <div class="app-toolbar">
-      <button
-        type="button"
-        class="app-menu-button"
-        aria-label="Abrir menú"
-        [attr.aria-expanded]="menuOpen()"
-        (click)="menuOpen.set(true)"
-      >
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      <span class="app-toolbar__title">Secciones</span>
+    <div class="app-content">
+      <div class="app-toolbar">
+        <button
+          type="button"
+          class="app-menu-button"
+          aria-label="Abrir menú"
+          [attr.aria-expanded]="menuOpen()"
+          (click)="menuOpen.set(true)"
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <span class="app-toolbar__title">Secciones</span>
+      </div>
+
+      <main class="app-main">
+        <section id="inicio" class="app-section">
+          <ui-profile-card [imageSrc]="p.avatarUrl ?? 'avatar-placeholder.svg'" [name]="p.fullName" [subtitle]="p.headline ?? undefined">
+            <div class="ui-tags">
+              @if (p.location) {
+                <ui-tag>{{ p.location }}</ui-tag>
+              }
+              @if (p.openToWork) {
+                <ui-tag>Disponible para trabajar</ui-tag>
+              }
+            </div>
+            @if (p.socialLinks.length) {
+              <div class="portfolio__links">
+                @for (link of p.socialLinks; track link.url) {
+                  <ui-link [href]="link.url" [external]="true">{{ platformLabels[link.platform] }}</ui-link>
+                }
+              </div>
+            }
+          </ui-profile-card>
+        </section>
+
+        <section id="sobre-mi" class="app-section">
+          <ui-section-header heading="Sobre mí" />
+          @if (p.summary) {
+            <p class="portfolio__text">{{ p.summary }}</p>
+          }
+          @for (group of skillGroups(); track group.category) {
+            <h3 class="portfolio__subheading">{{ group.label }}</h3>
+            <div class="portfolio__skills">
+              @for (skill of group.skills; track skill.id) {
+                @if (skill.level !== null) {
+                  <ui-progress-bar [label]="skill.name" [value]="skill.level * 20" />
+                } @else {
+                  <ui-tag>{{ skill.name }}</ui-tag>
+                }
+              }
+            </div>
+          } @empty {
+            @if (!p.summary) {
+              <p class="ui-muted">Sin información todavía.</p>
+            }
+          }
+        </section>
+
+        <section id="experiencia" class="app-section">
+          <ui-section-header heading="Experiencia" />
+          <ol class="portfolio__timeline">
+            @for (job of p.experience; track job.id) {
+              <li class="portfolio__item">
+                <h3 class="portfolio__item-title">{{ job.title }}</h3>
+                <p class="portfolio__item-meta">
+                  {{ job.companyName }} · {{ job.startDate | date: 'MMM y' }} – {{ job.endDate ? (job.endDate | date: 'MMM y') : 'actualidad' }}
+                </p>
+                <div class="ui-tags">
+                  @if (job.employmentType) {
+                    <ui-tag>{{ typeLabels[job.employmentType] }}</ui-tag>
+                  }
+                  @if (job.workMode) {
+                    <ui-tag>{{ modeLabels[job.workMode] }}</ui-tag>
+                  }
+                  @if (job.location) {
+                    <ui-tag>{{ job.location }}</ui-tag>
+                  }
+                </div>
+                @if (job.description) {
+                  <p class="portfolio__text">{{ job.description }}</p>
+                }
+                @if (job.skills.length) {
+                  <p class="ui-muted portfolio__item-skills">{{ job.skills.join(' · ') }}</p>
+                }
+              </li>
+            } @empty {
+              <p class="ui-muted">Sin experiencia registrada.</p>
+            }
+          </ol>
+        </section>
+
+        <section id="formacion" class="app-section">
+          <ui-section-header heading="Formación" />
+          <ol class="portfolio__timeline">
+            @for (item of p.education; track item.id) {
+              <li class="portfolio__item">
+                <h3 class="portfolio__item-title">{{ item.degree }}</h3>
+                <p class="portfolio__item-meta">
+                  {{ item.institution }}@if (item.fieldOfStudy) { · {{ item.fieldOfStudy }}} ·
+                  {{ item.startDate | date: 'y' }} – {{ item.endDate ? (item.endDate | date: 'y') : 'actualidad' }}
+                </p>
+                @if (item.description) {
+                  <p class="portfolio__text">{{ item.description }}</p>
+                }
+              </li>
+            } @empty {
+              <p class="ui-muted">Sin formación registrada.</p>
+            }
+          </ol>
+
+          @if (p.certifications.length) {
+            <h3 class="portfolio__subheading">Certificaciones</h3>
+            <ul class="portfolio__list">
+              @for (cert of p.certifications; track cert.id) {
+                <li class="portfolio__item">
+                  <span class="portfolio__item-title">{{ cert.name }}</span>
+                  <p class="portfolio__item-meta">
+                    {{ cert.issuer }} · {{ cert.issuedAt | date: 'MMM y' }}@if (cert.expiresAt) { · vence {{ cert.expiresAt | date: 'MMM y' }}}
+                    @if (cert.credentialUrl) {
+                      · <ui-link [href]="cert.credentialUrl" [external]="true">Ver credencial</ui-link>
+                    }
+                  </p>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+
+        <section id="proyectos" class="app-section">
+          <ui-section-header heading="Proyectos" />
+          <div class="app-grid">
+            @for (project of p.projects; track project.id) {
+              <ui-card [heading]="project.title">
+                @if (project.coverUrl) {
+                  <img #cover class="portfolio__cover" [src]="project.coverUrl" alt="" (error)="cover.hidden = true" />
+                }
+                @if (project.isFeatured) {
+                  <ui-tag>Destacado</ui-tag>
+                }
+                @if (project.summary) {
+                  <p class="portfolio__text">{{ project.summary }}</p>
+                }
+                @if (project.skills.length) {
+                  <p class="ui-muted portfolio__item-skills">{{ project.skills.join(' · ') }}</p>
+                }
+                <div class="portfolio__links">
+                  @if (project.repoUrl) {
+                    <ui-link [href]="project.repoUrl" [external]="true">Repositorio</ui-link>
+                  }
+                  @if (project.demoUrl) {
+                    <ui-link [href]="project.demoUrl" [external]="true">Demo</ui-link>
+                  }
+                </div>
+              </ui-card>
+            } @empty {
+              <p class="ui-muted">Sin proyectos registrados.</p>
+            }
+          </div>
+        </section>
+
+        <section id="contacto" class="app-section">
+          <ui-section-header heading="Contacto" />
+          <p><ui-link [href]="'mailto:' + p.email">{{ p.email }}</ui-link></p>
+          @if (p.socialLinks.length) {
+            <div class="portfolio__links">
+              @for (link of p.socialLinks; track link.url) {
+                <ui-link [href]="link.url" [external]="true">{{ platformLabels[link.platform] }}</ui-link>
+              }
+            </div>
+          }
+        </section>
+      </main>
     </div>
-
-    <main class="app-main">
-      <section id="inicio" class="app-section">
-        <ui-profile-card imageSrc="avatar-placeholder.svg" [name]="user.fullName" [subtitle]="subtitle(user)">
-          {{ user.email }}
-        </ui-profile-card>
-      </section>
-
-      <section id="sobre-mi" class="app-section">
-        <ui-section-header heading="Sobre mí" />
-        <p>Contenido pendiente.</p>
-      </section>
-
-      <section id="experiencia" class="app-section">
-        <ui-section-header heading="Experiencia" />
-        <p>Contenido pendiente.</p>
-      </section>
-
-      <section id="componentes" class="app-section">
-        <ui-section-header heading="Componentes UI" subtitle="Vista previa de shared/ui en modo claro y oscuro." />
-
-        <div class="app-grid">
-          <ui-card heading="Tags">
-            <div class="app-row">
-              <ui-tag>Angular</ui-tag>
-              <ui-tag>TypeScript</ui-tag>
-              <ui-tag>SCSS</ui-tag>
-            </div>
-          </ui-card>
-
-          <ui-card heading="Botones y enlaces">
-            <div class="app-row">
-              <ui-button>Primary</ui-button>
-              <ui-button variant="secondary">Secondary</ui-button>
-              <ui-button variant="ghost">Ghost</ui-button>
-            </div>
-            <ui-link href="https://angular.dev" [external]="true">Enlace externo</ui-link>
-          </ui-card>
-
-          <ui-card heading="Progress bars">
-            <div class="app-stack">
-              <ui-progress-bar label="Frontend" [value]="90" />
-              <ui-progress-bar label="Backend" [value]="75" />
-            </div>
-          </ui-card>
-        </div>
-      </section>
-
-      <section id="contacto" class="app-section">
-        <ui-section-header heading="Contacto" />
-        <p>Contenido pendiente.</p>
-      </section>
-    </main>
   </div>
-</div>
+} @else {
+  <main class="page">
+    <p class="ui-muted">Cargando…</p>
+  </main>
 }

@@ -1,6 +1,6 @@
 <ui-card>
   <div class="ui-profile-card">
-    <img class="ui-profile-card__image" [src]="imageSrc()" alt="" />
+    <img class="ui-profile-card__image" [src]="imageFailed() ? fallbackSrc() : imageSrc()" (error)="imageFailed.set(true)" alt="" />
     <div class="ui-profile-card__content">
       <h3 class="ui-profile-card__name">{{ name() }}</h3>
       @if (subtitle()) {

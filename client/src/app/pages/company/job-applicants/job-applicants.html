@@ -21,6 +21,7 @@
           @if (applicant.worker.headline) {
             <p class="job-applicants__headline">{{ applicant.worker.headline }}</p>
           }
+          <p><a class="job-applicants__profile" [routerLink]="['/perfil', applicant.worker.id]">Ver perfil →</a></p>
           @if (applicant.worker.skills.length) {
             <div class="ui-tags">
               @for (skill of applicant.worker.skills; track skill) {
