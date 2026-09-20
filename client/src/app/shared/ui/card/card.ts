@@ -23,6 +23,8 @@ export class Card {
   // Modo wizard: con steps el card muestra el ui-stepper y los botones Anterior / Siguiente / Finalizar
   readonly steps = input<string[]>([]);
   readonly step = model(0);
+  /** En false deshabilita Siguiente / Finalizar (p. ej. paso con errores de validación). */
+  readonly canAdvance = input(true);
 
   readonly action = output<string>();
   readonly finish = output<void>();

@@ -22,7 +22,7 @@
         @if (step() > 0) {
           <ui-button variant="secondary" (clicked)="prev()">Anterior</ui-button>
         }
-        <ui-button (clicked)="next()">{{ isLastStep() ? 'Finalizar' : 'Siguiente' }}</ui-button>
+        <ui-button [disabled]="!canAdvance()" (clicked)="next()">{{ isLastStep() ? 'Finalizar' : 'Siguiente' }}</ui-button>
       }
     </div>
   }

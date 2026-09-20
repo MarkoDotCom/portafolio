@@ -22,10 +22,11 @@ class ActionsHost {
 
 @Component({
   imports: [Card],
-  template: `<ui-card heading="Postular" [steps]="['Datos', 'Carta', 'Confirmar']" [(step)]="step" (finish)="finished.set(true)">Paso {{ step() }}</ui-card>`,
+  template: `<ui-card heading="Postular" [steps]="['Datos', 'Carta', 'Confirmar']" [(step)]="step" [canAdvance]="canAdvance()" (finish)="finished.set(true)">Paso {{ step() }}</ui-card>`,
 })
 class WizardHost {
   readonly step = signal(0);
+  readonly canAdvance = signal(true);
   readonly finished = signal(false);
 }
 
@@ -83,5 +84,10 @@ describe('Card', () => {
     buttons()[1].click();
     expect(host.finished()).toBe(true);
     expect(host.step()).toBe(2);
+
+    host.canAdvance.set(false);
+    await fixture.whenStable();
+    expect(buttons()[1].disabled).toBe(true);
+    expect(buttons()[0].disabled).toBe(false);
   });
 });
