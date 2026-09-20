@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ApiResponseFilter } from './api-response.filter.js';
+import { ApiResponseInterceptor } from './api-response.interceptor.js';
 import { ApplicationsModule } from './applications/applications.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { HealthController } from './health/health.controller.js';
 import { JobsModule } from './jobs/jobs.module.js';
-import { ProblemDetailsFilter } from './problem-details.filter.js';
 import { SkillsModule } from './skills/skills.module.js';
 import { UsersModule } from './users/users.module.js';
 import { WorkersModule } from './workers/workers.module.js';
@@ -13,7 +14,10 @@ import { WorkersModule } from './workers/workers.module.js';
 @Module({
   imports: [AuthModule, UsersModule, WorkersModule, SkillsModule, JobsModule, ApplicationsModule],
   controllers: [HealthController],
-  // Todos los errores salen con el mismo cuerpo (RFC 9457); ver problem-details.filter.ts
-  providers: [{ provide: APP_FILTER, useClass: ProblemDetailsFilter }],
+  // Toda respuesta, éxito o error, sale con el mismo envoltorio; ver api-response.ts
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: ApiResponseInterceptor },
+    { provide: APP_FILTER, useClass: ApiResponseFilter },
+  ],
 })
 export class RestModule {}

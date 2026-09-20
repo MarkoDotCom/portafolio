@@ -28,21 +28,21 @@ describe('Perfil del trabajador (e2e)', () => {
 
   it('returns the full portfolio of the seeded worker', async () => {
     const res = await request(app.getHttpServer()).get('/workers/me').set(as(ANA)).expect(200);
-    expect(res.body).toMatchObject({ id: ANA, fullName: 'Ana Rojas', slug: 'ana-rojas', openToWork: true, avatarUrl: expect.stringContaining('ana.png') });
-    expect(res.body.skills.map((s: { name: string }) => s.name)).toContain('Angular');
-    expect(res.body.experience).toHaveLength(2);
-    expect(res.body.experience[0]).toMatchObject({ companyName: 'Agencia Pixel', endDate: null, skills: expect.arrayContaining(['Angular']) });
-    expect(res.body.experience[1].companyId).toBe('30000000-0000-4000-8000-000000000001');
-    expect(res.body.education).toHaveLength(1);
-    expect(res.body.certifications[0]).toMatchObject({ issuer: 'IAAP' });
-    expect(res.body.projects[0]).toMatchObject({ slug: 'ui-kit', isFeatured: true, coverUrl: expect.stringContaining('ui-kit-cover') });
-    expect(res.body.socialLinks).toHaveLength(2);
+    expect(res.body.data).toMatchObject({ id: ANA, fullName: 'Ana Rojas', slug: 'ana-rojas', openToWork: true, avatarUrl: expect.stringContaining('ana.png') });
+    expect(res.body.data.skills.map((s: { name: string }) => s.name)).toContain('Angular');
+    expect(res.body.data.experience).toHaveLength(2);
+    expect(res.body.data.experience[0]).toMatchObject({ companyName: 'Agencia Pixel', endDate: null, skills: expect.arrayContaining(['Angular']) });
+    expect(res.body.data.experience[1].companyId).toBe('30000000-0000-4000-8000-000000000001');
+    expect(res.body.data.education).toHaveLength(1);
+    expect(res.body.data.certifications[0]).toMatchObject({ issuer: 'IAAP' });
+    expect(res.body.data.projects[0]).toMatchObject({ slug: 'ui-kit', isFeatured: true, coverUrl: expect.stringContaining('ui-kit-cover') });
+    expect(res.body.data.socialLinks).toHaveLength(2);
   });
 
   it('employers have no own portfolio but can read public ones', async () => {
     await request(app.getHttpServer()).get('/workers/me').set(as(DIEGO)).expect(403);
     const res = await request(app.getHttpServer()).get(`/workers/${ANA}`).set(as(DIEGO)).expect(200);
-    expect(res.body.fullName).toBe('Ana Rojas');
+    expect(res.body.data.fullName).toBe('Ana Rojas');
   });
 
   it('hides a private profile from everyone but its owner', async () => {

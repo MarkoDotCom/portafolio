@@ -45,7 +45,7 @@ export class JobDetail {
         this.sending.set(false);
       },
       error: (e: HttpErrorResponse) => {
-        this.error.set(e.error?.detail ?? 'No se pudo enviar la postulación');
+        this.error.set(e.error?.message ?? 'No se pudo enviar la postulación');
         this.sending.set(false);
       },
     });
