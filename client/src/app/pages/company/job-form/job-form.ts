@@ -81,8 +81,7 @@ export class JobForm {
     this.api.create(job).subscribe({
       next: () => void this.router.navigateByUrl('/empresa/ofertas'),
       error: (e: HttpErrorResponse) => {
-        const message = e.error?.message;
-        this.error.set(Array.isArray(message) ? message.join('. ') : (message ?? 'No se pudo crear la oferta'));
+        this.error.set(e.error?.message ?? 'No se pudo crear la oferta');
         this.saving.set(false);
       },
     });
