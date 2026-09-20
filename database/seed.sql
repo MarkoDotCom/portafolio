@@ -9,46 +9,46 @@
 BEGIN;
 
 -- Usuarios -------------------------------------------------------------------
-INSERT INTO app_user (id, email, external_auth_id, full_name) VALUES
+INSERT INTO users.app_user (id, email, external_auth_id, full_name) VALUES
   ('10000000-0000-4000-8000-000000000001', 'ana.rojas@example.com',   'auth|ana',   'Ana Rojas'),
   ('10000000-0000-4000-8000-000000000002', 'bruno.diaz@example.com',  'auth|bruno', 'Bruno Díaz'),
   ('10000000-0000-4000-8000-000000000003', 'carla.munoz@example.com', 'auth|carla', 'Carla Muñoz'),
   ('10000000-0000-4000-8000-000000000004', 'diego.perez@example.com', 'auth|diego', 'Diego Pérez');
 
 -- Media ----------------------------------------------------------------------
-INSERT INTO media_asset (id, owner_id, storage_key, url, mime_type, size_bytes, alt_text) VALUES
+INSERT INTO users.media_asset (id, owner_id, storage_key, url, mime_type, size_bytes, alt_text) VALUES
   ('20000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', 'avatars/ana.png',          'https://cdn.example.com/avatars/ana.png',          'image/png', 48211,  'Foto de Ana Rojas'),
   ('20000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000003', 'logos/nortech.svg',        'https://cdn.example.com/logos/nortech.svg',        'image/svg+xml', 3120, 'Logo Nortech Labs'),
   ('20000000-0000-4000-8000-000000000003', '10000000-0000-4000-8000-000000000001', 'projects/ui-kit-cover.png','https://cdn.example.com/projects/ui-kit-cover.png','image/png', 152034, 'Portada del UI Kit');
 
-UPDATE app_user SET avatar_media_id = '20000000-0000-4000-8000-000000000001'
+UPDATE users.app_user SET avatar_media_id = '20000000-0000-4000-8000-000000000001'
  WHERE id = '10000000-0000-4000-8000-000000000001';
 
 -- Trabajadores ---------------------------------------------------------------
-INSERT INTO worker_profile (user_id, slug, headline, summary, location, is_public, open_to_work) VALUES
+INSERT INTO workers.worker_profile (user_id, slug, headline, summary, location, is_public, open_to_work) VALUES
   ('10000000-0000-4000-8000-000000000001', 'ana-rojas',  'Frontend Engineer · Angular & Design Systems',
    'Seis años construyendo interfaces accesibles y librerías de componentes.', 'Santiago, Chile', true, true),
   ('10000000-0000-4000-8000-000000000002', 'bruno-diaz', 'Backend Developer · Node.js & PostgreSQL',
    'APIs y modelado de datos para productos SaaS.', 'Valparaíso, Chile', true, false);
 
-INSERT INTO social_link (worker_id, platform, url, sort_order) VALUES
+INSERT INTO workers.social_link (worker_id, platform, url, sort_order) VALUES
   ('10000000-0000-4000-8000-000000000001', 'github',   'https://github.com/anarojas', 0),
   ('10000000-0000-4000-8000-000000000001', 'website',  'https://anarojas.dev',        1),
   ('10000000-0000-4000-8000-000000000002', 'github',   'https://github.com/brunodiaz', 0);
 
 -- Empresa y empleadores ------------------------------------------------------
-INSERT INTO company (id, slug, name, description, website_url, industry, size, location, logo_media_id, created_by) VALUES
+INSERT INTO companies.company (id, slug, name, description, website_url, industry, size, location, logo_media_id, created_by) VALUES
   ('30000000-0000-4000-8000-000000000001', 'nortech-labs', 'Nortech Labs',
    'Consultora de software especializada en productos web para retail y banca.',
    'https://nortech.example.com', 'Software', '51-200', 'Santiago, Chile',
    '20000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000003');
 
-INSERT INTO company_member (company_id, user_id, role) VALUES
+INSERT INTO companies.company_member (company_id, user_id, role) VALUES
   ('30000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000003', 'owner'),
   ('30000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000004', 'recruiter');
 
 -- Skills (catálogo global) ---------------------------------------------------
-INSERT INTO skill (id, name, category) VALUES
+INSERT INTO public.skill (id, name, category) VALUES
   ('40000000-0000-4000-8000-000000000001', 'TypeScript',   'language'),
   ('40000000-0000-4000-8000-000000000002', 'Angular',      'framework'),
   ('40000000-0000-4000-8000-000000000003', 'React',        'framework'),
@@ -58,7 +58,7 @@ INSERT INTO skill (id, name, category) VALUES
   ('40000000-0000-4000-8000-000000000007', 'SCSS',         'language'),
   ('40000000-0000-4000-8000-000000000008', 'Comunicación', 'soft_skill');
 
-INSERT INTO worker_skill (worker_id, skill_id, level, sort_order) VALUES
+INSERT INTO workers.worker_skill (worker_id, skill_id, level, sort_order) VALUES
   -- Ana
   ('10000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000002', 5, 0),
   ('10000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', 5, 1),
@@ -72,7 +72,7 @@ INSERT INTO worker_skill (worker_id, skill_id, level, sort_order) VALUES
   ('10000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000006', 3, 3);
 
 -- Experiencia ----------------------------------------------------------------
-INSERT INTO experience (id, worker_id, company_id, company_name, title, employment_type, work_mode, location, start_date, end_date, description, sort_order) VALUES
+INSERT INTO workers.experience (id, worker_id, company_id, company_name, title, employment_type, work_mode, location, start_date, end_date, description, sort_order) VALUES
   ('50000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', NULL, 'Agencia Pixel',
    'Senior Frontend Engineer', 'full_time', 'remote', 'Remoto', '2022-03-01', NULL,
    'Lidero el design system y la migración a Angular standalone.', 0),
@@ -83,7 +83,7 @@ INSERT INTO experience (id, worker_id, company_id, company_name, title, employme
    'Backend Developer', 'full_time', 'hybrid', 'Valparaíso, Chile', '2021-01-04', NULL,
    'APIs REST en Node.js sobre PostgreSQL; pipelines de datos.', 0);
 
-INSERT INTO experience_skill (experience_id, skill_id) VALUES
+INSERT INTO workers.experience_skill (experience_id, skill_id) VALUES
   ('50000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000002'),
   ('50000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001'),
   ('50000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000007'),
@@ -92,30 +92,30 @@ INSERT INTO experience_skill (experience_id, skill_id) VALUES
   ('50000000-0000-4000-8000-000000000003', '40000000-0000-4000-8000-000000000005');
 
 -- Educación y certificaciones --------------------------------------------------
-INSERT INTO education (id, worker_id, institution, degree, field_of_study, start_date, end_date, sort_order) VALUES
+INSERT INTO workers.education (id, worker_id, institution, degree, field_of_study, start_date, end_date, sort_order) VALUES
   ('60000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', 'Universidad de Chile',   'Ingeniería Civil en Computación', 'Computación', '2014-03-01', '2019-01-31', 0),
   ('60000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000002', 'Universidad Técnica Federico Santa María', 'Ingeniería en Informática', 'Informática', '2016-03-01', '2020-12-15', 0);
 
-INSERT INTO certification (id, worker_id, name, issuer, issued_at, expires_at, credential_url, sort_order) VALUES
+INSERT INTO workers.certification (id, worker_id, name, issuer, issued_at, expires_at, credential_url, sort_order) VALUES
   ('70000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', 'Web Accessibility Specialist (WAS)', 'IAAP', '2023-05-10', '2026-05-10', 'https://iaap.example.com/cred/was-123', 0);
 
 -- Proyectos ------------------------------------------------------------------
-INSERT INTO project (id, worker_id, slug, title, summary, repo_url, demo_url, cover_media_id, started_at, is_featured, sort_order) VALUES
+INSERT INTO workers.project (id, worker_id, slug, title, summary, repo_url, demo_url, cover_media_id, started_at, is_featured, sort_order) VALUES
   ('80000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', 'ui-kit',
    'UI Kit accesible', 'Librería de componentes Angular con tema claro/oscuro y tokens de diseño.',
    'https://github.com/anarojas/ui-kit', 'https://ui-kit.anarojas.dev',
    '20000000-0000-4000-8000-000000000003', '2024-02-01', true, 0);
 
-INSERT INTO project_skill (project_id, skill_id) VALUES
+INSERT INTO workers.project_skill (project_id, skill_id) VALUES
   ('80000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000002'),
   ('80000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001'),
   ('80000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000007');
 
-INSERT INTO project_media (project_id, media_id, sort_order) VALUES
+INSERT INTO workers.project_media (project_id, media_id, sort_order) VALUES
   ('80000000-0000-4000-8000-000000000001', '20000000-0000-4000-8000-000000000003', 0);
 
 -- Ofertas --------------------------------------------------------------------
-INSERT INTO job_posting (id, company_id, created_by, title, description, employment_type, work_mode, location, salary_min, salary_max, salary_currency, status, published_at, closes_at) VALUES
+INSERT INTO companies.job_posting (id, company_id, created_by, title, description, employment_type, work_mode, location, salary_min, salary_max, salary_currency, status, published_at, closes_at) VALUES
   ('90000000-0000-4000-8000-000000000001', '30000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000004',
    'Senior Frontend Engineer (Angular)',
    'Buscamos frontend senior para liderar el design system de nuestros productos de banca digital.',
@@ -129,7 +129,7 @@ INSERT INTO job_posting (id, company_id, created_by, title, description, employm
    'Borrador: apoyo al equipo de QA en pruebas automatizadas.',
    'internship', 'onsite', 'Santiago, Chile', NULL, NULL, NULL, 'draft', NULL, NULL);
 
-INSERT INTO job_posting_skill (job_posting_id, skill_id, is_required) VALUES
+INSERT INTO companies.job_posting_skill (job_posting_id, skill_id, is_required) VALUES
   ('90000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000002', true),
   ('90000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', true),
   ('90000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000007', false),
@@ -138,7 +138,7 @@ INSERT INTO job_posting_skill (job_posting_id, skill_id, is_required) VALUES
   ('90000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000006', false);
 
 -- Postulaciones y su historial -------------------------------------------------
-INSERT INTO job_application (id, job_posting_id, worker_id, status, cover_letter, applied_at) VALUES
+INSERT INTO companies.job_application (id, job_posting_id, worker_id, status, cover_letter, applied_at) VALUES
   -- Ana → Frontend: avanzó hasta entrevista
   ('a0000000-0000-4000-8000-000000000001', '90000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001',
    'interview', 'Trabajé en Nortech entre 2019 y 2022; me interesa volver a liderar el design system.', now() - interval '9 days'),
@@ -149,7 +149,7 @@ INSERT INTO job_application (id, job_posting_id, worker_id, status, cover_letter
   ('a0000000-0000-4000-8000-000000000003', '90000000-0000-4000-8000-000000000002', '10000000-0000-4000-8000-000000000002',
    'withdrawn', 'Tengo experiencia directa en el stack que piden.', now() - interval '4 days');
 
-INSERT INTO job_application_event (application_id, changed_by, from_status, to_status, note, created_at) VALUES
+INSERT INTO companies.job_application_event (application_id, changed_by, from_status, to_status, note, created_at) VALUES
   ('a0000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000001', NULL,        'applied',   NULL,                              now() - interval '9 days'),
   ('a0000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000004', 'applied',   'reviewing', 'Perfil muy alineado.',            now() - interval '7 days'),
   ('a0000000-0000-4000-8000-000000000001', '10000000-0000-4000-8000-000000000004', 'reviewing', 'interview', 'Entrevista técnica agendada.',    now() - interval '3 days'),

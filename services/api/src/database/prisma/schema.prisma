@@ -6,42 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-}
-
-model app_user {
-  id                                                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                                             String                  @unique @db.Citext
-  external_auth_id                                  String?                 @unique
-  full_name                                         String
-  avatar_media_id                                   String?                 @db.Uuid
-  created_at                                        DateTime                @default(now()) @db.Timestamptz(6)
-  updated_at                                        DateTime                @default(now()) @db.Timestamptz(6)
-  media_asset_app_user_avatar_media_idTomedia_asset media_asset?            @relation("app_user_avatar_media_idTomedia_asset", fields: [avatar_media_id], references: [id], onUpdate: NoAction, map: "app_user_avatar_fk")
-  company                                           company[]
-  company_member                                    company_member[]
-  job_application_event                             job_application_event[]
-  job_posting                                       job_posting[]
-  media_asset_media_asset_owner_idToapp_user        media_asset[]           @relation("media_asset_owner_idToapp_user")
-  worker_profile                                    worker_profile?
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model certification {
-  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  worker_id      String         @db.Uuid
-  name           String
-  issuer         String
-  issued_at      DateTime       @db.Date
-  expires_at     DateTime?      @db.Date
-  credential_id  String?
-  credential_url String?
-  is_visible     Boolean        @default(true)
-  sort_order     Int            @default(0)
-  created_at     DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime       @default(now()) @db.Timestamptz(6)
-  worker_profile worker_profile @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([worker_id, sort_order], map: "certification_worker_idx")
+  schemas  = ["companies", "public", "users", "workers"]
 }
 
 model company {
@@ -60,8 +25,10 @@ model company {
   app_user       app_user?        @relation(fields: [created_by], references: [id], onUpdate: NoAction)
   media_asset    media_asset?     @relation(fields: [logo_media_id], references: [id], onUpdate: NoAction)
   company_member company_member[]
-  experience     experience[]
   job_posting    job_posting[]
+  experience     experience[]
+
+  @@schema("companies")
 }
 
 model company_member {
@@ -74,60 +41,7 @@ model company_member {
 
   @@id([company_id, user_id])
   @@index([user_id], map: "company_member_user_idx")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model education {
-  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  worker_id      String         @db.Uuid
-  institution    String
-  degree         String
-  field_of_study String?
-  start_date     DateTime       @db.Date
-  end_date       DateTime?      @db.Date
-  description    String?
-  is_visible     Boolean        @default(true)
-  sort_order     Int            @default(0)
-  created_at     DateTime       @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime       @default(now()) @db.Timestamptz(6)
-  worker_profile worker_profile @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@index([worker_id, sort_order], map: "education_worker_idx")
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model experience {
-  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  worker_id        String             @db.Uuid
-  company_id       String?            @db.Uuid
-  company_name     String
-  title            String
-  employment_type  employment_type?
-  work_mode        work_mode?
-  location         String?
-  start_date       DateTime           @db.Date
-  end_date         DateTime?          @db.Date
-  description      String?
-  is_visible       Boolean            @default(true)
-  sort_order       Int                @default(0)
-  created_at       DateTime           @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime           @default(now()) @db.Timestamptz(6)
-  company          company?           @relation(fields: [company_id], references: [id], onUpdate: NoAction)
-  worker_profile   worker_profile     @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  experience_skill experience_skill[]
-
-  @@index([company_id], map: "experience_company_idx", where: raw("(company_id IS NOT NULL)"))
-  @@index([worker_id, sort_order], map: "experience_worker_idx")
-}
-
-model experience_skill {
-  experience_id String     @db.Uuid
-  skill_id      String     @db.Uuid
-  experience    experience @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  skill         skill      @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([experience_id, skill_id])
-  @@index([skill_id], map: "experience_skill_skill_idx")
+  @@schema("companies")
 }
 
 model job_application {
@@ -145,6 +59,7 @@ model job_application {
   @@unique([job_posting_id, worker_id], map: "job_application_uq")
   @@index([job_posting_id, status], map: "job_application_posting_idx")
   @@index([worker_id, applied_at(sort: Desc)], map: "job_application_worker_idx")
+  @@schema("companies")
 }
 
 model job_application_event {
@@ -159,6 +74,7 @@ model job_application_event {
   app_user        app_user?           @relation(fields: [changed_by], references: [id], onUpdate: NoAction)
 
   @@index([application_id, created_at], map: "job_application_event_app_idx")
+  @@schema("companies")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -186,6 +102,7 @@ model job_posting {
 
   @@index([company_id, status], map: "job_posting_company_idx")
   @@index([published_at(sort: Desc)], map: "job_posting_published_idx", where: raw("(status = 'published'::job_status)"))
+  @@schema("companies")
 }
 
 model job_posting_skill {
@@ -197,6 +114,39 @@ model job_posting_skill {
 
   @@id([job_posting_id, skill_id])
   @@index([skill_id], map: "job_posting_skill_skill_idx")
+  @@schema("companies")
+}
+
+model skill {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String              @unique @db.Citext
+  category          skill_category      @default(other)
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  job_posting_skill job_posting_skill[]
+  experience_skill  experience_skill[]
+  project_skill     project_skill[]
+  worker_skill      worker_skill[]
+
+  @@schema("public")
+}
+
+model app_user {
+  id                                                String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                                             String                  @unique @db.Citext
+  external_auth_id                                  String?                 @unique
+  full_name                                         String
+  avatar_media_id                                   String?                 @db.Uuid
+  created_at                                        DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at                                        DateTime                @default(now()) @db.Timestamptz(6)
+  company                                           company[]
+  company_member                                    company_member[]
+  job_application_event                             job_application_event[]
+  job_posting                                       job_posting[]
+  media_asset_app_user_avatar_media_idTomedia_asset media_asset?            @relation("app_user_avatar_media_idTomedia_asset", fields: [avatar_media_id], references: [id], onUpdate: NoAction, map: "app_user_avatar_fk")
+  media_asset_media_asset_owner_idToapp_user        media_asset[]           @relation("media_asset_owner_idToapp_user")
+  worker_profile                                    worker_profile?
+
+  @@schema("users")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -209,13 +159,91 @@ model media_asset {
   size_bytes                                     BigInt
   alt_text                                       String?
   created_at                                     DateTime        @default(now()) @db.Timestamptz(6)
-  app_user_app_user_avatar_media_idTomedia_asset app_user[]      @relation("app_user_avatar_media_idTomedia_asset")
   company                                        company[]
+  app_user_app_user_avatar_media_idTomedia_asset app_user[]      @relation("app_user_avatar_media_idTomedia_asset")
   app_user_media_asset_owner_idToapp_user        app_user        @relation("media_asset_owner_idToapp_user", fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   project                                        project[]
   project_media                                  project_media[]
 
   @@index([owner_id], map: "media_asset_owner_idx")
+  @@schema("users")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model certification {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  worker_id      String         @db.Uuid
+  name           String
+  issuer         String
+  issued_at      DateTime       @db.Date
+  expires_at     DateTime?      @db.Date
+  credential_id  String?
+  credential_url String?
+  is_visible     Boolean        @default(true)
+  sort_order     Int            @default(0)
+  created_at     DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime       @default(now()) @db.Timestamptz(6)
+  worker_profile worker_profile @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([worker_id, sort_order], map: "certification_worker_idx")
+  @@schema("workers")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model education {
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  worker_id      String         @db.Uuid
+  institution    String
+  degree         String
+  field_of_study String?
+  start_date     DateTime       @db.Date
+  end_date       DateTime?      @db.Date
+  description    String?
+  is_visible     Boolean        @default(true)
+  sort_order     Int            @default(0)
+  created_at     DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime       @default(now()) @db.Timestamptz(6)
+  worker_profile worker_profile @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([worker_id, sort_order], map: "education_worker_idx")
+  @@schema("workers")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model experience {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  worker_id        String             @db.Uuid
+  company_id       String?            @db.Uuid
+  company_name     String
+  title            String
+  employment_type  employment_type?
+  work_mode        work_mode?
+  location         String?
+  start_date       DateTime           @db.Date
+  end_date         DateTime?          @db.Date
+  description      String?
+  is_visible       Boolean            @default(true)
+  sort_order       Int                @default(0)
+  created_at       DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime           @default(now()) @db.Timestamptz(6)
+  company          company?           @relation(fields: [company_id], references: [id], onUpdate: NoAction)
+  worker_profile   worker_profile     @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  experience_skill experience_skill[]
+
+  @@index([company_id], map: "experience_company_idx", where: raw("(company_id IS NOT NULL)"))
+  @@index([worker_id, sort_order], map: "experience_worker_idx")
+  @@schema("workers")
+}
+
+model experience_skill {
+  experience_id String     @db.Uuid
+  skill_id      String     @db.Uuid
+  experience    experience @relation(fields: [experience_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  skill         skill      @relation(fields: [skill_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([experience_id, skill_id])
+  @@index([skill_id], map: "experience_skill_skill_idx")
+  @@schema("workers")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -243,6 +271,7 @@ model project {
 
   @@unique([worker_id, slug], map: "project_slug_uq")
   @@index([worker_id, sort_order], map: "project_worker_idx")
+  @@schema("workers")
 }
 
 model project_media {
@@ -253,6 +282,7 @@ model project_media {
   project     project     @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([project_id, media_id])
+  @@schema("workers")
 }
 
 model project_skill {
@@ -263,17 +293,7 @@ model project_skill {
 
   @@id([project_id, skill_id])
   @@index([skill_id], map: "project_skill_skill_idx")
-}
-
-model skill {
-  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name              String              @unique @db.Citext
-  category          skill_category      @default(other)
-  created_at        DateTime            @default(now()) @db.Timestamptz(6)
-  experience_skill  experience_skill[]
-  job_posting_skill job_posting_skill[]
-  project_skill     project_skill[]
-  worker_skill      worker_skill[]
+  @@schema("workers")
 }
 
 model social_link {
@@ -286,6 +306,7 @@ model social_link {
   worker_profile worker_profile  @relation(fields: [worker_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([worker_id, sort_order], map: "social_link_worker_idx")
+  @@schema("workers")
 }
 
 model worker_profile {
@@ -298,16 +319,17 @@ model worker_profile {
   open_to_work    Boolean           @default(false)
   created_at      DateTime          @default(now()) @db.Timestamptz(6)
   updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  job_application job_application[]
   certification   certification[]
   education       education[]
   experience      experience[]
-  job_application job_application[]
   project         project[]
   social_link     social_link[]
   app_user        app_user          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   worker_skill    worker_skill[]
 
   @@index([open_to_work], map: "worker_profile_open_idx", where: raw("is_public"))
+  @@schema("workers")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -321,6 +343,7 @@ model worker_skill {
 
   @@id([worker_id, skill_id])
   @@index([skill_id], map: "worker_skill_skill_idx")
+  @@schema("workers")
 }
 
 enum application_status {
@@ -330,11 +353,15 @@ enum application_status {
   offer
   rejected
   withdrawn
+
+  @@schema("public")
 }
 
 enum company_role {
   owner
   recruiter
+
+  @@schema("public")
 }
 
 enum company_size {
@@ -344,6 +371,8 @@ enum company_size {
   s201_500   @map("201-500")
   s501_1000  @map("501-1000")
   s1001_plus @map("1001+")
+
+  @@schema("public")
 }
 
 enum employment_type {
@@ -352,12 +381,16 @@ enum employment_type {
   contract
   internship
   freelance
+
+  @@schema("public")
 }
 
 enum job_status {
   draft
   published
   closed
+
+  @@schema("public")
 }
 
 enum skill_category {
@@ -368,6 +401,8 @@ enum skill_category {
   cloud
   soft_skill
   other
+
+  @@schema("public")
 }
 
 enum social_platform {
@@ -376,10 +411,14 @@ enum social_platform {
   website
   twitter
   other
+
+  @@schema("public")
 }
 
 enum work_mode {
   onsite
   hybrid
   remote
+
+  @@schema("public")
 }

@@ -11,14 +11,14 @@ Una misma cuenta puede ser ambas cosas y administrar varias empresas.
 
 | Archivo      | Contenido                                                   |
 |--------------|-------------------------------------------------------------|
-| `schema.sql` | Enums, tablas, constraints, índices y triggers `updated_at` |
+| `schema.sql` | Esquemas, enums, tablas, constraints, índices y triggers `updated_at` |
 | `seed.sql`   | Datos de ejemplo: 4 usuarios, 1 empresa, 3 ofertas, 3 postulaciones |
 
 Con Docker (desde `proyectos/bolsa-laboral/`, credenciales en `.env`):
 
 ```bash
 docker compose up -d db
-docker compose exec db psql -U portafolio -d portafolio -c '\dt'
+docker compose exec db psql -U portafolio -d portafolio -c '\dt users.* workers.* companies.* public.*'
 ```
 
 Los scripts se ejecutan solos la primera vez que se crea el volumen. Tras cambiar `schema.sql`: `docker compose down -v && docker compose up -d db`.
@@ -30,6 +30,19 @@ createdb marketplace
 psql -d marketplace -f schema.sql
 psql -d marketplace -f seed.sql
 ```
+
+## Esquemas
+
+Las tablas se reparten en cuatro esquemas de PostgreSQL. Los nombres de tabla no cambian; en SQL se usan calificados (`users.app_user`).
+
+| Esquema     | Tablas |
+|-------------|--------|
+| `users`     | `app_user`, `media_asset` |
+| `workers`   | `worker_profile`, `social_link`, `experience`, `education`, `certification`, `project`, `project_media`, `worker_skill`, `experience_skill`, `project_skill` |
+| `companies` | `company`, `company_member`, `job_posting`, `job_posting_skill`, `job_application`, `job_application_event` |
+| `public`    | Enums, la función `set_updated_at()` y el catálogo `skill` |
+
+En Prisma el datasource declara `schemas = ["public", "users", "workers", "companies"]` y cada modelo lleva `@@schema(...)`; los nombres de modelo siguen siendo los de las tablas.
 
 ## Diagrama ER
 
@@ -153,6 +166,7 @@ Todas llevan `is_visible` (borrador por ítem) y `sort_order` (orden manual).
 
 ## Convenciones
 
+- Tablas en los esquemas `users`, `workers` y `companies` (ver arriba); enums y función compartida en `public`.
 - PK `uuid` con `gen_random_uuid()`; timestamps `timestamptz`; `updated_at` mantenido por trigger.
 - `ON DELETE CASCADE` desde `app_user`, `worker_profile` y `company`; `SET NULL` en referencias informativas (`created_by`, `company_id` en experiencia, medios).
 - Estados y tipos como `ENUM` de Postgres. Para agregar un valor: `ALTER TYPE ... ADD VALUE`.
