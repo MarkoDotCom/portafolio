@@ -20,31 +20,45 @@
   } @else if (jobs(); as jobs) {
     @if (jobs.length === 0) {
       <p class="ui-muted">Todavía no hay ofertas. Crea la primera.</p>
+    } @else {
+      <div class="ui-table-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th>Oferta</th>
+              <th>Estado</th>
+              <th>Tipo</th>
+              <th>Modalidad</th>
+              <th>Postulantes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (job of jobs; track job.id) {
+              <tr>
+                <td>{{ job.title }}</td>
+                <td><ui-tag>{{ statusLabels[job.status] }}</ui-tag></td>
+                <td>{{ typeLabels[job.employmentType] }}</td>
+                <td>{{ modeLabels[job.workMode] }}</td>
+                <td>
+                  <a class="company-jobs__count" [routerLink]="['/empresa/ofertas', job.id, 'postulantes']">
+                    {{ job.applicationsCount }} {{ job.applicationsCount === 1 ? 'postulante' : 'postulantes' }}
+                  </a>
+                </td>
+                <td class="ui-table__actions">
+                  @if (job.status === 'draft') {
+                    <ui-button (clicked)="setStatus(job, 'published')">Publicar</ui-button>
+                  }
+                  @if (job.status === 'published') {
+                    <ui-button variant="secondary" (clicked)="setStatus(job, 'closed')">Cerrar</ui-button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
-    <div class="page__grid">
-      @for (job of jobs; track job.id) {
-        <ui-card [heading]="job.title">
-          <div class="ui-tags">
-            <ui-tag>{{ statusLabels[job.status] }}</ui-tag>
-            <ui-tag>{{ typeLabels[job.employmentType] }}</ui-tag>
-            <ui-tag>{{ modeLabels[job.workMode] }}</ui-tag>
-          </div>
-          <p class="company-jobs__count">
-            <a [routerLink]="['/empresa/ofertas', job.id, 'postulantes']">
-              {{ job.applicationsCount }} {{ job.applicationsCount === 1 ? 'postulante' : 'postulantes' }}
-            </a>
-          </p>
-          <div class="ui-form__actions">
-            @if (job.status === 'draft') {
-              <ui-button (clicked)="setStatus(job, 'published')">Publicar</ui-button>
-            }
-            @if (job.status === 'published') {
-              <ui-button variant="secondary" (clicked)="setStatus(job, 'closed')">Cerrar</ui-button>
-            }
-          </div>
-        </ui-card>
-      }
-    </div>
   } @else {
     <p class="ui-muted">Cargando…</p>
   }

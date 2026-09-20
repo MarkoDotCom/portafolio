@@ -1,0 +1,192 @@
+<header class="ux__header">
+  <span class="ux__brand">Portafolio · UX</span>
+  <ui-theme-toggle />
+</header>
+
+<div class="ux__layout">
+  <ui-sidebar [items]="sections" [(open)]="menuOpen" />
+
+  <div class="ux__content">
+    <div class="ux__toolbar">
+      <button
+        type="button"
+        class="ux__menu-button"
+        aria-label="Abrir menú"
+        [attr.aria-expanded]="menuOpen()"
+        (click)="menuOpen.set(true)"
+      >
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <span class="ux__toolbar-title">Componentes</span>
+    </div>
+
+    <main class="ux__main">
+      <ui-section-header heading="Scratchpad de componentes" subtitle="Cada componente de shared/ui y las clases globales de styles.scss, con sus variantes." />
+
+      <section id="botones" class="ux__section">
+        <h2 class="ux__heading">Botones <code>ui-button</code></h2>
+        <div class="ux__row">
+          <ui-button>Primary</ui-button>
+          <ui-button variant="secondary">Secondary</ui-button>
+          <ui-button variant="ghost">Ghost</ui-button>
+          <ui-button [disabled]="true">Disabled</ui-button>
+        </div>
+      </section>
+
+      <section id="tags" class="ux__section">
+        <h2 class="ux__heading">Tags <code>ui-tag</code></h2>
+        <div class="ui-tags">
+          <ui-tag>Remoto</ui-tag>
+          <ui-tag>Jornada completa</ui-tag>
+          <ui-tag>En revisión</ui-tag>
+        </div>
+      </section>
+
+      <section id="tarjetas" class="ux__section">
+        <h2 class="ux__heading">Tarjetas <code>ui-card</code></h2>
+        <div class="ux__grid">
+          <ui-card heading="Solo título y contenido" content="Texto pasado por el input content." />
+          <ui-card heading="Con contenido proyectado">
+            <div class="ui-tags">
+              <ui-tag>Tag</ui-tag>
+              <ui-tag>Otro tag</ui-tag>
+            </div>
+            <p>Lo que va dentro de la etiqueta se proyecta debajo del contenido.</p>
+          </ui-card>
+          <ui-card heading="Con acciones" content="Los botones se definen con el input actions." [actions]="cardActions" (action)="lastAction.set($event)">
+            @if (lastAction(); as action) {
+              <p class="ui-muted">Última acción: <strong>{{ action }}</strong></p>
+            }
+          </ui-card>
+        </div>
+      </section>
+
+      <section id="stepper" class="ux__section">
+        <h2 class="ux__heading">Stepper <code>ui-stepper</code> y card en modo wizard</h2>
+        <div class="ux__stack">
+          <ui-stepper [steps]="['Postulado', 'En revisión', 'Entrevista', 'Oferta']" [step]="2" />
+          <ui-card heading="Postular" [steps]="wizardSteps" [(step)]="wizardStep" (finish)="wizardDone.set(true)">
+            @switch (wizardStep()) {
+              @case (0) {
+                <label class="ui-field">
+                  <span class="ui-field__label">Nombre</span>
+                  <input class="ui-input" type="text" placeholder="Tu nombre" />
+                </label>
+              }
+              @case (1) {
+                <label class="ui-field">
+                  <span class="ui-field__label">Carta de presentación</span>
+                  <textarea class="ui-textarea" placeholder="Opcional"></textarea>
+                </label>
+              }
+              @case (2) {
+                <p>Revisa los datos y pulsa Finalizar.</p>
+              }
+            }
+            @if (wizardDone()) {
+              <p class="ui-muted">Se emitió <strong>finish</strong>.</p>
+            }
+          </ui-card>
+        </div>
+      </section>
+
+      <section id="perfil" class="ux__section">
+        <h2 class="ux__heading">Tarjeta de perfil <code>ui-profile-card</code></h2>
+        <div class="ux__grid">
+          <ui-profile-card imageSrc="avatar-placeholder.svg" name="Ana Pérez" subtitle="Desarrolladora frontend">
+            <div class="ui-tags">
+              <ui-tag>Trabajadora</ui-tag>
+            </div>
+            <ui-button>Entrar</ui-button>
+          </ui-profile-card>
+          <ui-profile-card imageSrc="https://cdn.example.com/no-existe.png" name="Imagen rota" subtitle="Cae al avatar de respaldo" />
+        </div>
+      </section>
+
+      <section id="enlaces" class="ux__section">
+        <h2 class="ux__heading">Enlaces <code>ui-link</code></h2>
+        <div class="ux__row">
+          <ui-link href="/">Interno</ui-link>
+          <ui-link href="https://angular.dev" [external]="true">Externo (nueva pestaña)</ui-link>
+        </div>
+      </section>
+
+      <section id="progreso" class="ux__section">
+        <h2 class="ux__heading">Barra de progreso <code>ui-progress-bar</code></h2>
+        <div class="ux__stack">
+          <ui-progress-bar label="TypeScript" [value]="90" />
+          <ui-progress-bar label="Angular" [value]="75" />
+          <ui-progress-bar label="SQL" [value]="40" />
+        </div>
+      </section>
+
+      <section id="encabezados" class="ux__section">
+        <h2 class="ux__heading">Encabezados <code>ui-section-header</code></h2>
+        <ui-section-header heading="Solo título" />
+        <ui-section-header heading="Con subtítulo" subtitle="Texto secundario debajo del título." />
+      </section>
+
+      <section id="formularios" class="ux__section">
+        <h2 class="ux__heading">Formularios <code>.ui-field .ui-input .ui-select .ui-textarea .ui-checkbox</code></h2>
+        <form class="ux__form" (submit)="$event.preventDefault()">
+          <label class="ui-field">
+            <span class="ui-field__label">Texto</span>
+            <input class="ui-input" type="text" placeholder="Escribe algo" />
+          </label>
+          <label class="ui-field">
+            <span class="ui-field__label">Selección</span>
+            <select class="ui-select">
+              <option>Opción A</option>
+              <option>Opción B</option>
+            </select>
+          </label>
+          <label class="ui-field">
+            <span class="ui-field__label">Área de texto</span>
+            <textarea class="ui-textarea" placeholder="Varias líneas"></textarea>
+          </label>
+          <label class="ui-checkbox">
+            <input type="checkbox" checked />
+            Casilla marcada
+          </label>
+          <p class="ui-form__error">Mensaje de error de formulario.</p>
+          <div class="ui-form__actions">
+            <ui-button type="submit">Guardar</ui-button>
+            <ui-button variant="ghost">Cancelar</ui-button>
+          </div>
+        </form>
+      </section>
+
+      <section id="tablas" class="ux__section">
+        <h2 class="ux__heading">Tablas <code>.ui-table</code></h2>
+        <div class="ui-table-wrap">
+          <table class="ui-table">
+            <thead>
+              <tr>
+                <th>Oferta</th>
+                <th>Empresa</th>
+                <th>Estado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Frontend Angular</td>
+                <td>Nortech</td>
+                <td><ui-tag>Publicada</ui-tag></td>
+                <td class="ui-table__actions"><ui-button variant="secondary">Cerrar</ui-button></td>
+              </tr>
+              <tr>
+                <td>Backend NestJS</td>
+                <td>Nortech</td>
+                <td><ui-tag>Borrador</ui-tag></td>
+                <td class="ui-table__actions"><ui-button>Publicar</ui-button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

@@ -121,6 +121,47 @@ body {
   gap: 0.5rem;
 }
 
+// Tablas: clases globales para <table> nativas (mismo criterio que los formularios)
+.ui-table-wrap {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--ui-color-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ui-color-text-muted);
+    white-space: nowrap;
+  }
+
+  td {
+    color: var(--ui-color-text-body);
+  }
+
+  tbody tr:hover {
+    background-color: var(--ui-color-hover);
+  }
+}
+
+.ui-table__actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
 // Páginas con sesión (dentro de Shell)
 .page {
   max-width: 960px;

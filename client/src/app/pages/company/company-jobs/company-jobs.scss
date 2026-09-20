@@ -13,7 +13,7 @@
 }
 
 .company-jobs__new,
-.company-jobs__count a {
+.company-jobs__count {
   color: var(--ui-color-primary);
   font-weight: 500;
   text-decoration: none;
@@ -21,8 +21,4 @@
   &:hover {
     text-decoration: underline;
   }
-}
-
-.company-jobs__count {
-  margin: 0.75rem 0 0;
 }

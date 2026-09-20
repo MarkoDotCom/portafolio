@@ -3,11 +3,11 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApplicationsApi, type Application } from '../../../core/applications.api';
 import { APPLICATION_STATUS_LABELS, TERMINAL_APPLICATION_STATUSES } from '../../../core/labels';
-import { Button, Card, SectionHeader, Tag } from '../../../shared/ui';
+import { Button, SectionHeader, Tag } from '../../../shared/ui';
 
 @Component({
   selector: 'app-my-applications',
-  imports: [DatePipe, RouterLink, Button, Card, SectionHeader, Tag],
+  imports: [DatePipe, RouterLink, Button, SectionHeader, Tag],
   templateUrl: './my-applications.html',
   styleUrl: './my-applications.scss',
 })

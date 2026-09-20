@@ -1,0 +1,101 @@
+.ux__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+.ux__brand {
+  flex: 1;
+  font-weight: 700;
+}
+
+.ux__layout {
+  display: flex;
+}
+
+.ux__content {
+  flex: 1;
+  min-width: 0;
+}
+
+// Solo en móvil: abre el drawer de secciones
+.ux__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--ui-color-border);
+}
+
+.ux__toolbar-title {
+  font-weight: 600;
+}
+
+.ux__menu-button {
+  display: inline-flex;
+  padding: 0.375rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  color: var(--ui-color-text);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--ui-color-hover);
+  }
+}
+
+@media (min-width: 768px) {
+  .ux__toolbar {
+    display: none;
+  }
+}
+
+.ux__main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.ux__section {
+  margin-top: 3rem;
+  scroll-margin-top: 1rem;
+}
+
+.ux__heading {
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ui-color-border);
+  font-size: 1.125rem;
+
+  code {
+    margin-left: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--ui-color-text-muted);
+  }
+}
+
+.ux__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ux__stack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ux__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.ux__form {
+  max-width: 480px;
+}

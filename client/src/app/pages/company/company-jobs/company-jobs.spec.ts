@@ -29,6 +29,7 @@ describe('CompanyJobs', () => {
     await fixture.whenStable();
 
     const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('tbody tr')).toHaveLength(1);
     expect(el.textContent).toContain('Borrador');
     expect(el.textContent).toContain('2 postulantes');
 

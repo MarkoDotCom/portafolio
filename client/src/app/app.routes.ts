@@ -10,9 +10,11 @@ import { MyApplications } from './pages/jobs/my-applications/my-applications';
 import { Portfolio } from './pages/portfolio/portfolio';
 import { Shell } from './pages/shell/shell';
 import { UserSelect } from './pages/user-select/user-select';
+import { Ux } from './pages/ux/ux';
 
 export const routes: Routes = [
   { path: '', component: UserSelect, pathMatch: 'full' },
+  { path: 'ux', component: Ux },
   {
     path: '',
     component: Shell,

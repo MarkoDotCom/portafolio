@@ -3,11 +3,11 @@ import { RouterLink } from '@angular/router';
 import { JobsApi, type Job } from '../../../core/jobs.api';
 import { EMPLOYMENT_TYPE_LABELS, JOB_STATUS_LABELS, WORK_MODE_LABELS } from '../../../core/labels';
 import { Session } from '../../../core/session';
-import { Button, Card, SectionHeader, Tag } from '../../../shared/ui';
+import { Button, SectionHeader, Tag } from '../../../shared/ui';
 
 @Component({
   selector: 'app-company-jobs',
-  imports: [RouterLink, Button, Card, SectionHeader, Tag],
+  imports: [RouterLink, Button, SectionHeader, Tag],
   templateUrl: './company-jobs.html',
   styleUrl: './company-jobs.scss',
 })

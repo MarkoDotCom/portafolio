@@ -23,6 +23,7 @@ describe('MyApplications', () => {
     await fixture.whenStable();
 
     const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('tbody tr')).toHaveLength(2);
     const buttons = el.querySelectorAll<HTMLButtonElement>('ui-button button');
     expect(buttons).toHaveLength(1);
 
