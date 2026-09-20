@@ -36,7 +36,7 @@ export class JobApplicants {
     this.error.set(null);
     this.api.updateStatus(applicant.id, status, note.trim() || undefined).subscribe({
       next: (updated) => this.applicants.update((list) => list!.map((a) => (a.id === updated.id ? updated : a))),
-      error: (e: HttpErrorResponse) => this.error.set(e.error?.message ?? 'No se pudo cambiar el estado'),
+      error: (e: HttpErrorResponse) => this.error.set(e.error?.detail ?? 'No se pudo cambiar el estado'),
     });
   }
 }

@@ -38,6 +38,23 @@ describe('Ofertas y postulaciones (e2e)', () => {
     await request(app.getHttpServer()).post('/jobs').set(as(BRUNO)).send({}).expect(403);
   });
 
+  it('answers every error as RFC 9457 problem details', async () => {
+    const forbidden = await request(app.getHttpServer()).post('/jobs').set(as(BRUNO)).send({}).expect(403);
+    expect(forbidden.headers['content-type']).toMatch('application/problem+json');
+    expect(forbidden.body).toEqual({
+      type: 'about:blank',
+      title: 'Forbidden',
+      status: 403,
+      detail: 'Tu usuario no tiene el rol requerido',
+      instance: '/jobs',
+    });
+
+    const invalid = await request(app.getHttpServer()).post('/jobs').set(as(DIEGO)).send({}).expect(400);
+    expect(invalid.body).toMatchObject({ status: 400, title: 'Bad Request', instance: '/jobs' });
+    expect(typeof invalid.body.detail).toBe('string');
+    expect(invalid.body.errors.length).toBeGreaterThan(1);
+  });
+
   it('employer creates a draft with a required skill', async () => {
     const skills = await request(app.getHttpServer()).get('/skills').set(as(DIEGO)).expect(200);
     const angular = skills.body.find((s: { name: string }) => s.name === 'Angular');
